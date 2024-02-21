@@ -12,8 +12,8 @@ route.get("/", (req, res) => {
     res.json("apiSmartDine")
 })
 
+route.use("/", authRoute)
 route.use("/user", userRoute)
-route.use("/auth", authRoute)
 route.use("/riwayat", riwayatRoute)
 route.use("/menu", menuRoute)
 route.use("/historymakan", historyMakanRoute)
