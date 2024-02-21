@@ -68,12 +68,14 @@ module.exports = {
     
             // Enkripsi password
             const enkripPassword = await bcrypt.hash(password, 10);
+            const enkripConfirmPassword = await bcrypt.hash(confirmPassword, 10);
     
             // Buat user baru
             const user = await User.create({
                 nama: nama,
                 email: email,
                 password: enkripPassword,
+                confirmPassword: enkripConfirmPassword,
             });
     
             // Tanggapan berhasil
