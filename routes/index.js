@@ -13,7 +13,7 @@ route.get("/", (req, res) => {
 })
 
 route.use("/user", userRoute)
-route.use("/", authRoute)
+route.use("/auth", authRoute)
 route.use("/riwayat", riwayatRoute)
 route.use("/menu", menuRoute)
 route.use("/historymakan", historyMakanRoute)
