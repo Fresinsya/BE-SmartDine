@@ -2,23 +2,23 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
+// Fungsi untuk menghasilkan token JWT
 const generateToken = (user) => {
     return jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_Key
+        { id: user.id, email: user.email },
+        process.env.JWT_Key
     );
-  };
+};
 
 module.exports = {
-    login : async (req, res) => {
+    login: async (req, res) => {
         const { email, password } = req.body;
         try {
-            const user = await User.findOne({ email:
-            email });
+            const user = await User.findOne({ email: email });
             if (!user) {
                 return res.status(400).json({
                     status: "Error",
-                    message: "email tidak terdaftar",
+                    message: "Email tidak terdaftar",
                 });
             }
 
@@ -26,15 +26,16 @@ module.exports = {
             if (!cekPassword) {
                 return res.status(400).json({
                     status: "Error",
-                    message: "password salah",
+                    message: "Password salah",
                 });
             }
 
+            // Jika email dan password valid, hasilkan token JWT
             const token = generateToken(user);
 
             res.status(200).json({
-                status: "oke",
-                message: "berhasil login",
+                status: "OK",
+                message: "Berhasil login",
                 id: user.id,
                 email: user.email,
                 token: token,
@@ -42,7 +43,7 @@ module.exports = {
         } catch (error) {
             res.status(500).json({
                 status: "Error",
-                message: "gagal login",
+                message: "Gagal login",
                 error: error.message,
             });
         }
@@ -57,7 +58,7 @@ module.exports = {
                     message: "Email sudah terdaftar",
                 });
             }
-    
+
             // Pengecekan konsistensi password
             if (password !== confirmPassword) {
                 return res.status(400).json({
@@ -65,22 +66,22 @@ module.exports = {
                     message: "Konfirmasi password tidak sesuai",
                 });
             }
-    
+
             // Enkripsi password
             const enkripPassword = await bcrypt.hash(password, 10);
-    
+
             // Buat user baru
-            const user = await User.create({
+            const newUser = await User.create({
                 nama: nama,
                 email: email,
                 password: enkripPassword,
             });
-    
+
             // Tanggapan berhasil
             res.status(201).json({
                 status: "OK",
                 message: "Berhasil menambahkan user",
-                data: user
+                data: newUser
             });
         } catch (error) {
             // Tanggapan kesalahan
@@ -91,6 +92,4 @@ module.exports = {
             });
         }
     }
-    
-
 }
