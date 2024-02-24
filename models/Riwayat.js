@@ -16,6 +16,10 @@ const RiwayatSkema = new mongoose.Schema(
         tgl_input : {
             type: Date,
             default: Date.now
+        },
+        IdUser : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
         }
 
     }

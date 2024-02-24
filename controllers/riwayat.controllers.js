@@ -18,9 +18,10 @@ module.exports = {
         }
     },
     createRiwayat: async (req, res) => {
-        const { FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
+        const { idUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
         try {
             const riwayat = await Riwayat.create({
+                IdUser: idUser,
                 FACV: FACV,
                 FCVC: FCVC,
                 NCP: NCP,
@@ -64,6 +65,25 @@ module.exports = {
             });
         }
     },
+    getRiwayatByIdUser: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const riwayat = await Riwayat.findOne({
+                IdUser: id
+            });
+            res.status(200).json({
+                status: "oke",
+                message: "berhasil mendapatkan data riwayat by user id",
+                data: riwayat,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },
     editRiwayat: async (req, res) => {
         const { id } = req.params;
         try {
@@ -87,7 +107,7 @@ module.exports = {
             });
         }
     },
-    deleteRiwayat : async (req, res) => {
+    deleteRiwayat: async (req, res) => {
         const { id } = req.params;
         try {
             const riwayat = await Riwayat.findByIdAndDelete(id);

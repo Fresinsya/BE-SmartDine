@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
     createUser: async (req, res) => {
-        const { nama, usia, email, password, confirmPassword, alamat, gender, telepon, tinggiBadan, beratBadan, kalori } = req.body;
+        const { nama, usia, email, password, confirmPassword, alamat, gender, telepon, tinggiBadan, beratBadan, family_history, kalori } = req.body;
         try {
             // cek email sudah terdaftar atau belum
             const cekEmail = await User.findOne({ email: email });
@@ -28,6 +28,7 @@ module.exports = {
                     telepon: telepon,
                     tinggiBadan: tinggiBadan,
                     beratBadan: beratBadan,
+                    family_history: family_history,
                     kaloriHarian: kalori
                 }
             )

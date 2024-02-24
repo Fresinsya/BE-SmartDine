@@ -12,6 +12,7 @@ const UserSkema = new mongoose.Schema(
         telepon : Number,
         tinggiBadan : Number,
         beratBadan : Number,
+        family_history : Number,
         kaloriHarian : Number
     }
 )
