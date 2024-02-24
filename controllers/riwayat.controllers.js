@@ -18,10 +18,10 @@ module.exports = {
         }
     },
     createRiwayat: async (req, res) => {
-        const { idUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
+        const { IdUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
         try {
             const riwayat = await Riwayat.create({
-                IdUser: idUser,
+                IdUser: IdUser,
                 FACV: FACV,
                 FCVC: FCVC,
                 NCP: NCP,
