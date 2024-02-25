@@ -148,7 +148,12 @@ module.exports = {
                 }
             }
     
-            const menus = await Menu.find({'bahan.jenis': {$in: jenisBahan, $regex: jenisBahan, $options: "i"}});
+            const menus = await MenuModel.find({
+                $or: [
+                    { 'bahan.jenis': { $in: jenisBahan } },
+                    { 'bahan.jenis': { $regex: jenisBahan, $options: "i" } }
+                ]
+            });
                 // .where("jenis_bahan")
                 // .in(jenisBahan);
     
