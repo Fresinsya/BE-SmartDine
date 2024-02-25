@@ -136,14 +136,15 @@ module.exports = {
             const search = req.query.search || "";
             let jenisBahan = req.query.jenisBahan;
     
-            const jenisBahanOptions = ["sayuran", "buah", "makanan pokok", "lauk pauk"];
+            const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu"];
     
             // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
             if (!jenisBahan) {
                 jenisBahan = jenisBahanOptions;
-            } else {
-                jenisBahan = jenisBahan.split(",");
-            }
+            } 
+            // else {
+            //     jenisBahan = jenisBahan.split(",");
+            // }
     
             const menus = await Menu.find({ "bahan.jenis": { $regex: jenisBahan, $options: "i" } })
                 // .where("jenis_bahan")
