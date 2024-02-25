@@ -133,7 +133,6 @@ module.exports = {
     },
     searchMenu: async (req, res) => {
         try {
-            const search = req.query.search || "";
             let jenisBahan = req.query.jenisBahan;
     
             const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu"];
@@ -148,14 +147,10 @@ module.exports = {
                 }
             }
     
+            // Lakukan pencarian menu berdasarkan jenis bahan
             const menus = await Menu.find({
-                $or: [
-                    { 'bahan.jenis': { $in: jenisBahan } },
-                    { 'bahan.jenis': { $regex: jenisBahan, $options: "i" } }
-                ]
+                'bahan.jenis': { $in: jenisBahan } // Menggunakan $in untuk mencocokkan dengan nilai array jenisBahan
             });
-                // .where("jenis_bahan")
-                // .in(jenisBahan);
     
             // Pengecekan apakah ada hasil pencarian
             if (!menus || menus.length === 0) {
