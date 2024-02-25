@@ -148,7 +148,7 @@ module.exports = {
                 }
             }
     
-            const menus = await MenuModel.find({
+            const menus = await Menu.find({
                 $or: [
                     { 'bahan.jenis': { $in: jenisBahan } },
                     { 'bahan.jenis': { $regex: jenisBahan, $options: "i" } }
