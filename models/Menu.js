@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const BahanSchema = new mongoose.Schema({
     nama: String,
+    jenis: String,
     jumlah: String
 });
 

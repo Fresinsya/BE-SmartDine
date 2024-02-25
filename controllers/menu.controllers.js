@@ -65,6 +65,7 @@ module.exports = {
                 menu: menu,
                 bahan: bahan.map(item => ({
                     nama: item.nama,
+                    jenis: item.jenis,
                     jumlah: item.jumlah
                 })),
                 cara_masak: cara_masak,
@@ -147,6 +148,43 @@ module.exports = {
             const menus = await Menu.find({ "bahan.nama": { $regex: search, $options: "i" } })
                 .where("jenis_bahan")
                 .in(jenisBahan);
+    
+            // Pengecekan apakah ada hasil pencarian
+            if (!menus || menus.length === 0) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Menu tidak ditemukan."
+                });
+            }
+    
+            // Menampilkan hasil pencarian
+            res.status(200).json({
+                status: "Success",
+                message: "Berhasil mencari data",
+                data: menus,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal mencari data",
+                error: error.message,
+            });
+        }
+    },
+    searchJenisBahan : async (req, res) => {
+        try {
+            let jenisBahan = req.query.jenisBahan;
+    
+            const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk"];
+    
+            // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
+            if (!jenisBahan) {
+                jenisBahan = jenisBahanOptions;
+            } else {
+                jenisBahan = jenisBahan.split(",");
+            }
+    
+            const menus = await Menu.find({ "bahan.jenis": { $in: jenisBahan } });
     
             // Pengecekan apakah ada hasil pencarian
             if (!menus || menus.length === 0) {
