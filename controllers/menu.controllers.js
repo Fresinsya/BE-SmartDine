@@ -142,9 +142,11 @@ module.exports = {
             if (!jenisBahan) {
                 jenisBahan = jenisBahanOptions;
             } 
-            // else {
-            //     jenisBahan = jenisBahan.split(",");
-            // }
+            else {
+                if (jenisBahan.includes(",")) {
+                    jenisBahan = jenisBahan.split(",");
+                }
+            }
     
             const menus = await Menu.find({ "bahan.jenis": { $regex: jenisBahan, $options: "i" } })
                 // .where("jenis_bahan")
