@@ -68,7 +68,7 @@ async function generateDailyMenu(searchResult) {
 
         // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
         for (let day = 0; day < totalDays; day++) {
-            const dailyMenu = {};
+            const dailyMenu = [];
 
             // Ambil menu untuk setiap waktu makan
             for (const waktuMakan in menusPerDay) {
