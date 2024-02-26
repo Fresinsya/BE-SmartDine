@@ -31,20 +31,54 @@ async function searchMenu(search, jenisBahan) {
 }
 
 // Function untuk membuat menu harian dari hasil pencarian
+// async function generateDailyMenu(searchResult) {
+//     try {
+//         const totalDays = 6;
+//         const menuPerDay = 3;
+//         const dailyMenus = [];
+
+//         // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
+//         for (let day = 0; day < totalDays; day++) {
+//             const dailyMenu = [];
+
+//             // Ambil 3 menu untuk setiap hari
+//             for (let i = 0; i < menuPerDay; i++) {
+//                 const menuIndex = (day * menuPerDay + i) % searchResult.length;
+//                 dailyMenu.push(searchResult[menuIndex]);
+//             }
+
+//             dailyMenus.push(dailyMenu);
+//         }
+
+//         return dailyMenus;
+//     } catch (error) {
+//         throw new Error(error.message);
+//     }
+// }
+
 async function generateDailyMenu(searchResult) {
     try {
         const totalDays = 6;
-        const menuPerDay = 3;
+        const menusPerDay = {
+            sarapan: 1,
+            siang: 1,
+            malam: 1,
+        };
         const dailyMenus = [];
 
         // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
         for (let day = 0; day < totalDays; day++) {
-            const dailyMenu = [];
+            const dailyMenu = {};
 
-            // Ambil 3 menu untuk setiap hari
-            for (let i = 0; i < menuPerDay; i++) {
-                const menuIndex = (day * menuPerDay + i) % searchResult.length;
-                dailyMenu.push(searchResult[menuIndex]);
+            // Ambil menu untuk setiap waktu makan
+            for (const waktuMakan in menusPerDay) {
+                const menu = searchResult.find(menu => menu.waktu_makan.includes(waktuMakan));
+                if (menu) {
+                    dailyMenu[waktuMakan] = menu;
+                } else {
+                    // Jika tidak ada menu untuk waktu makan ini, bisa diisi dengan nilai default
+                    dailyMenu[waktuMakan] = { menu: "Menu Default", waktu_makan: waktuMakan };
+                }
             }
 
             dailyMenus.push(dailyMenu);
@@ -55,6 +89,7 @@ async function generateDailyMenu(searchResult) {
         throw new Error(error.message);
     }
 }
+
 
 module.exports = {
     searchMenu,
