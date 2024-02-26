@@ -135,7 +135,7 @@ module.exports = {
         try {
             let jenisBahan = req.query.jenisBahan;
     
-            const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu"];
+            const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu", "lainnya"];
     
             // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
             if (!jenisBahan) {

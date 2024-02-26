@@ -6,22 +6,40 @@ async function searchMenu(search, jenisBahan) {
     try {
         
         const keywords = search.includes(",") ? search.split(",") : [search];
-
-        const jenisBahanOptions = ["Sayuran", "Buah", "Makanan pokok", "Lauk pauk"];
-
-        if (!jenisBahan) {
-            jenisBahan = jenisBahanOptions;
-        } else {
-            jenisBahan = jenisBahan.split(",");
-        }
+        
+    
+            // const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu", "lainnya"];
+    
+            // // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
+            // if (!jenisBahan) {
+            //     jenisBahan = jenisBahanOptions;
+            // } 
+            // else {
+            //     if (jenisBahan.includes(",")) {
+            //         jenisBahan = jenisBahan.split(",");
+            //     }
+            // }
+    
+            // // Lakukan pencarian menu berdasarkan jenis bahan
+            // const menus = await Menu.find({
+            //     'bahan.jenis': { $in: jenisBahan } // Menggunakan $in untuk mencocokkan dengan nilai array jenisBahan
+            // });
+    
+            // Pengecekan apakah ada hasil pencarian
+            if (!menus || menus.length === 0) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Menu tidak ditemukan."
+                });
+            }
 
         const menus = await Menu.find({
-            "bahan.nama": { $in: keywords.map(keyword => new RegExp(keyword, 'i')) },
-            $or: [
-                { jenis_bahan: { $in: jenisBahan.map(option => new RegExp(option, 'i')) } },
-                { jenis_bahan: { $exists: false } },
-                { jenis_bahan: { $size: 0 } }
-            ]
+            "bahan.nama": { $in: keywords.map(keyword => new RegExp(keyword, 'i')) }
+            // $or: [
+            //     { jenis_bahan: { $in: jenisBahan.map(option => new RegExp(option, 'i')) } },
+            //     { jenis_bahan: { $exists: false } },
+            //     { jenis_bahan: { $size: 0 } }
+            // ]
         });
         return menus;
     }

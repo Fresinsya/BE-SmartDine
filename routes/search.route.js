@@ -11,11 +11,11 @@ route.get('/generate', async (req, res) => {
     try {
 
         let search = req.query.search || [];
-        let jenisBahan = req.query.jenisBahan || "All";
+        // let jenisBahan = req.query.jenisBahan;
 
         
         // Lakukan pencarian menu
-        const searchResult = await searchMenu(search, jenisBahan);
+        const searchResult = await searchMenu(search);
 
 
         if (!searchResult || searchResult.length === 0) {
