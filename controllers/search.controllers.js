@@ -4,7 +4,7 @@ const Menu = require('../models/Menu');
 // Function untuk mencari menu berdasarkan kriteria pencarian
 async function searchMenu(search, jenisBahan) {
     try {
-        
+
         const keywords = search.includes(",") ? search.split(",") : [search];
 
         // const jenisBahanOptions = ["Sayuran", "Buah", "Makanan pokok", "Lauk pauk"];
@@ -59,36 +59,45 @@ async function searchMenu(search, jenisBahan) {
 async function generateDailyMenu(searchResult) {
     try {
         const totalDays = 6;
-        const menusPerDay = {
-            sarapan: 1,
-            siang: 1,
-            malam: 1,
-        };
-        const dailyMenus = [];
+        const menusPerDay = 3;
+        const selectedMenus = [];
 
-        // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
-        for (let day = 0; day < totalDays; day++) {
+        // Lakukan iterasi untuk setiap hari
+        for (let day = 1; day <= totalDays; day++) {
             const dailyMenu = [];
 
+            let hasBreakfast = false; // Untuk melacak apakah menu sarapan sudah dipilih
+
             // Ambil menu untuk setiap waktu makan
-            for (const waktuMakan in menusPerDay) {
-                const menu = searchResult.find(menu => menu.waktu_makan.includes(waktuMakan));
-                if (menu) {
-                    dailyMenu[waktuMakan] = menu;
-                } else {
-                    // Jika tidak ada menu untuk waktu makan ini, bisa diisi dengan nilai default
-                    dailyMenu[waktuMakan] = { menu: "Menu Default", waktu_makan: waktuMakan };
+            for (let i = 0; i < menusPerDay; i++) {
+                let randomMenu;
+
+                // Pastikan setidaknya satu menu memiliki waktu_makan = 'Sarapan'
+                if (!hasBreakfast) {
+                    randomMenu = searchResult.find(menu => menu.waktu_makan.includes('Sarapan'));
+                    if (randomMenu) {
+                        hasBreakfast = true;
+                    }
                 }
+
+                // Jika belum ada menu sarapan terpilih, pilih secara acak dari hasil pencarian
+                if (!randomMenu) {
+                    const randomIndex = Math.floor(Math.random() * searchResult.length);
+                    randomMenu = searchResult[randomIndex];
+                }
+
+                dailyMenu.push(randomMenu);
             }
 
-            dailyMenus.push(dailyMenu);
+            selectedMenus.push({ day, menus: dailyMenu });
         }
 
-        return dailyMenus;
+        return selectedMenus;
     } catch (error) {
         throw new Error(error.message);
     }
 }
+
 
 
 module.exports = {
