@@ -20,7 +20,7 @@ module.exports = {
     getMealPlanningbyId: async (req, res) => {
         const id = req.params.id;
         try {
-            const mealPlanning = await MealPlanning.findById(id);
+            const mealPlanning = await Meal_planning.findById(id);
             if (!mealPlanning) {
                 return res.status(404).json({
                     message: "id tidak ditemukan",
@@ -42,7 +42,7 @@ module.exports = {
     createMealPlanning: async (req, res) => {
         const { IdUser, bahan } = req.body;
         try {
-            const newMealPlanning = await MealPlanning.create({
+            const newMealPlanning = await Meal_planning.create({
                 IdUser: IdUser,
                 bahan: bahan,
             });
