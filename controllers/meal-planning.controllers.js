@@ -42,19 +42,33 @@ module.exports = {
     createMealPlanning: async (req, res) => {
         const { IdUser, bahan } = req.body;
         try {
-            const newMealPlanning = await Meal_planning.create({
-                IdUser: IdUser,
-                bahan: bahan,
-            });
+            // Dapatkan dokumen MealPlanning berdasarkan IdUser
+            const mealPlanning = await Meal_planning.findOne({ IdUser });
+    
+            if (!mealPlanning) {
+                // Jika tidak ada MealPlanning untuk IdUser ini, Anda dapat membuatnya
+                const newMealPlanning = new Meal_planning({
+                    IdUser,
+                    bahan: [bahan] // Buat array baru dengan bahan baru
+                });
+                // Simpan dokumen MealPlanning baru
+                await newMealPlanning.save();
+            } else {
+                // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan
+                mealPlanning.bahan.push(bahan);
+                // Simpan perubahan pada dokumen MealPlanning yang ada
+                await mealPlanning.save();
+            }
+    
             res.status(201).json({
                 status: "oke",
-                message: "berhasil menambahkan data meal planning",
-                data: newMealPlanning,
+                message: "berhasil menambahkan bahan",
+                data: mealPlanning
             });
         } catch (error) {
             res.status(500).json({
                 status: "Error",
-                message: "gagal menambahkan data meal planning",
+                message: "gagal menambahkan bahan",
                 error: error.message,
             });
         }
