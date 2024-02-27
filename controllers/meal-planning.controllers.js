@@ -49,13 +49,13 @@ module.exports = {
                 // Jika tidak ada MealPlanning untuk IdUser ini, Anda dapat membuatnya
                 const newMealPlanning = new Meal_planning({
                     IdUser,
-                    bahan: [bahan] // Buat array baru dengan bahan baru
+                    bahan: bahan // Menggunakan bahan langsung
                 });
                 // Simpan dokumen MealPlanning baru
                 await newMealPlanning.save();
             } else {
-                // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan
-                mealPlanning.bahan.push(bahan);
+                // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan yang ada
+                mealPlanning.bahan = mealPlanning.bahan.concat(bahan);
                 // Simpan perubahan pada dokumen MealPlanning yang ada
                 await mealPlanning.save();
             }
