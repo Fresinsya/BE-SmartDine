@@ -8,6 +8,7 @@ const { historyMakanRoute } = require("./history-makan.router");
 const {randomMenuRoute} = require("./randomMenu.route");
 const { searchMenuRoute } = require("./search.route");
 const {editProfileRoute} = require("./editProfile.route");
+const { mealPlanningRoute } = require("./meal_planning.route");
 
 route.get("/", (req, res) => {
     res.json("apiSmartDine")
@@ -21,5 +22,6 @@ route.use("/menu", menuRoute)
 route.use("/historymakan", historyMakanRoute)
 route.use("/random", randomMenuRoute)
 route.use("/search", searchMenuRoute)
+route.use("/meal", mealPlanningRoute)
 
 module.exports = route
