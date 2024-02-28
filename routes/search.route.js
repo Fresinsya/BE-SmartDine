@@ -25,7 +25,7 @@ route.get('/generate', async (req, res) => {
         }
 
         // Generate menu harian dari hasil pencarian
-        await generateDailyMenu(searchResult);
+        const dailyMenus = await generateDailyMenu(searchResult);
 
         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
         const randomMenus = dailyMenus.map((menus, day) => ({
