@@ -20,8 +20,10 @@ module.exports = {
     getMealPlanningbyId: async (req, res) => {
         const id = req.params.id;
         try {
-            const mealPlanning = await Meal_planning.findById(id);
-            if (!mealPlanning) {
+            const bahan = await Meal_planning.findOne({
+                IdUser: id
+            });
+            if (!bahan) {
                 return res.status(404).json({
                     message: "id tidak ditemukan",
                 });
@@ -29,7 +31,7 @@ module.exports = {
             res.status(200).json({
                 status: "oke",
                 message: "berhasil mendapatkan data",
-                data: mealPlanning,
+                data: bahan,
             });
         } catch (error) {
             res.status(500).json({

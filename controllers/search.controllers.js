@@ -2,7 +2,7 @@
 const Menu = require('../models/Menu');
 
 // Function untuk mencari menu berdasarkan kriteria pencarian
-async function searchMenu(search, jenisBahan) {
+async function searchMenu(search) {
     try {
 
         const keywords = search.includes(",") ? search.split(",") : [search];
