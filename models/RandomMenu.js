@@ -16,7 +16,7 @@ const MenuSchema = new mongoose.Schema({
 });
 
 const RandomMenuSchema = new mongoose.Schema({
-  idUser: {
+  IdUser: {
     type: String,
     required: true
   },
