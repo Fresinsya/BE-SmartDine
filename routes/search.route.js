@@ -44,8 +44,8 @@ route.post('/generate', async (req, res) => {
         }));
 
         // Simpan data ke dalam skema RandomMenu
-        // await RandomMenu.create(randomMenus);
-        console.log(randomMenus)
+        await RandomMenu.create(randomMenus);
+        // console.log(randomMenus)
 
 
         console.log("Random menus generated successfully");
