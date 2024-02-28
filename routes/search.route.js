@@ -9,7 +9,7 @@ const RandomMenu = require('../models/RandomMenu');
 // Definisikan route untuk menjalankan fungsi utama
 
 route.post('/generate', async (req, res) => {
-    const { IdUser } = req.body; // Mengambil IdUser dari req.body
+    // const { IdUser } = req.body; // Mengambil IdUser dari req.body
 
     try {
         let search = req.query.search || [];
