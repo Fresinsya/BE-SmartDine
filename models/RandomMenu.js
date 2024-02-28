@@ -11,7 +11,7 @@ const RandomMenuSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        menus:[
+        menus: [
             {
                 id_menu: {
                     type: String,
@@ -24,6 +24,8 @@ const RandomMenuSchema = new mongoose.Schema(
 
             }
         ],
+
+
     }
 )
 
