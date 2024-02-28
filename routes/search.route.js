@@ -9,11 +9,9 @@ const RandomMenu = require('../models/RandomMenu');
 // Definisikan route untuk menjalankan fungsi utama
 route.post('/generate', async (req, res) => {
     try {
-        const { IdUser } = req.body; // Extract IdUser from the request body
-
         let search = req.query.search || [];
         
-        // Perform menu search
+        // Lakukan pencarian menu
         const searchResult = await searchMenu(search);
 
         if (!searchResult || searchResult.length === 0) {
@@ -22,13 +20,13 @@ route.post('/generate', async (req, res) => {
             return;
         }
 
-        // Generate daily menus from the search result
+        // Generate menu harian dari hasil pencarian
         const dailyMenus = await generateDailyMenu(searchResult);
 
-        // Map daily menus to the structure expected by RandomMenuModel
+        // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
         const randomMenus = dailyMenus.map((menus, day) => ({
-            IdUser, // Use the extracted IdUser
-            day: day + 1,
+            IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
+            day: day + 1, // Menambahkan properti day
             menus: menus.map(menu => ({
                 id_menu: menu._id,
                 menu: menu.menu,
@@ -38,20 +36,22 @@ route.post('/generate', async (req, res) => {
                 waktu_makan: menu.waktu_makan,
                 avatar: menu.avatar,
                 jenis_bahan: menu.jenis_bahan,
-                berat_makanan: menu.berat_makanan
+                berat_makanan: menu.berat_makanan,
+                day: day + 1 // Menambahkan properti day di dalam objek menu
             }))
         }));
 
-        // Save the data into the RandomMenu model
+        // Simpan data ke dalam skema RandomMenu
         await RandomMenu.create(randomMenus);
 
         console.log("Random menus generated successfully");
         res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
     } catch (error) {
-        console.error("Failed to search or generate menus:", error.message);
+        console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
         res.status(500).json({ error: error.message });
     }
 });
+
 
 module.exports = {
     searchMenuRoute: route,
