@@ -36,6 +36,7 @@ async function searchMenu(search) {
 //         const totalDays = 6;
 //         const menuPerDay = 3;
 //         const dailyMenus = [];
+        
 
 //         // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
 //         for (let day = 0; day < totalDays; day++) {
@@ -89,7 +90,7 @@ async function generateDailyMenu(searchResult) {
                 dailyMenu.push(randomMenu);
             }
 
-            selectedMenus.push({menus: dailyMenu });
+            selectedMenus.push(dailyMenu);
         }
 
         return selectedMenus;
