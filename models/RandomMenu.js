@@ -1,36 +1,28 @@
 const mongoose = require('mongoose');
 
+const MenuSchema = new mongoose.Schema({
+  day: {
+    type: String,
+    required: true
+  },
+  idMenu: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
 
-const RandomMenuSchema = new mongoose.Schema(
-    {
-        menus: [
-            {
-                day: {
-                    type: String,
-                    required: true
-                },
-                IdUser: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'User'
-                },
+const RandomMenuSchema = new mongoose.Schema({
+  idUser: {
+    type: String,
+    required: true
+  },
+  menus: [MenuSchema]
+});
 
-            },
-            {
-                id_menu: {
-                    type: String,
-                    required: true
-                },
-                menu: {
-                    type: String,
-                    required: true
-                },
+const RandomMenuModel = mongoose.model('RandomMenu', RandomMenuSchema);
 
-            }
-        ],
-
-
-    }
-)
-
-const RandomMenu = mongoose.model("RandomMenu", RandomMenuSchema)
-module.exports = RandomMenu
+module.exports = RandomMenuModel;
