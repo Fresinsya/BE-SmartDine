@@ -57,49 +57,6 @@ async function generateDailyMenu(searchResult) {
     }
 }
 
-// async function generateDailyMenu(searchResult) {
-//     try {
-//         const totalDays = 6;
-//         const menusPerDay = 3;
-//         const selectedMenus = [];
-
-//         // Lakukan iterasi untuk setiap hari
-//         for (let day = 1; day <= totalDays; day++) {
-//             const dailyMenu = [];
-
-//             let hasBreakfast = false; // Untuk melacak apakah menu sarapan sudah dipilih
-
-//             // Ambil menu untuk setiap waktu makan
-//             for (let i = 0; i < menusPerDay; i++) {
-//                 let randomMenu;
-
-//                 // Pastikan setidaknya satu menu memiliki waktu_makan = 'Sarapan'
-//                 if (!hasBreakfast) {
-//                     randomMenu = searchResult.find(menu => menu.waktu_makan.includes('Sarapan'));
-//                     if (randomMenu) {
-//                         hasBreakfast = true;
-//                     }
-//                 }
-
-//                 // Jika belum ada menu sarapan terpilih, pilih secara acak dari hasil pencarian
-//                 if (!randomMenu) {
-//                     const randomIndex = Math.floor(Math.random() * searchResult.length);
-//                     randomMenu = searchResult[randomIndex];
-//                 }
-
-//                 dailyMenu.push(randomMenu);
-//             }
-
-//             selectedMenus.push(dailyMenu);
-//         }
-
-//         return selectedMenus;
-//     } catch (error) {
-//         throw new Error(error.message);
-//     }
-// }
-
-
 
 module.exports = {
     searchMenu,
