@@ -25,25 +25,25 @@ route.get('/generate', async (req, res) => {
         }
 
         // Generate menu harian dari hasil pencarian
-        const dailyMenus = await generateDailyMenu(searchResult);
+        await generateDailyMenu(searchResult);
 
         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
-        const randomMenus = dailyMenus.map((menus, day) => ({
-            day: day + 1,
-            menus: menus.map(menu => ({
-                menu: menu.menu,
-                bahan: menu.bahan,
-                cara_masak: menu.cara_masak,
-                kalori_makanan: menu.kalori_makanan,
-                waktu_makan: menu.waktu_makan,
-                avatar: menu.avatar,
-                jenis_bahan: menu.jenis_bahan,
-                berat_makanan: menu.berat_makanan
-            }))
-        }));
+        // const randomMenus = dailyMenus.map((menus, day) => ({
+        //     day: day + 1,
+        //     menus: menus.map(menu => ({
+        //         menu: menu.menu,
+        //         bahan: menu.bahan,
+        //         cara_masak: menu.cara_masak,
+        //         kalori_makanan: menu.kalori_makanan,
+        //         waktu_makan: menu.waktu_makan,
+        //         avatar: menu.avatar,
+        //         jenis_bahan: menu.jenis_bahan,
+        //         berat_makanan: menu.berat_makanan
+        //     }))
+        // }));
 
         // // Simpan data ke dalam skema RandomMenu
-        await RandomMenu.create(randomMenus);
+        // await RandomMenu.create(randomMenus);
 
         console.log("Random menus generated successfully");
         res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
