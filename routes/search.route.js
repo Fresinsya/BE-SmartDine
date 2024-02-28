@@ -9,15 +9,11 @@ const RandomMenu = require('../models/RandomMenu');
 // Definisikan route untuk menjalankan fungsi utama
 route.post('/generate', async (req, res) => {
     try {
+        const search = req.query.search || [];
+        const idUser = req.body.IdUser; // Menggunakan req.body untuk mendapatkan IdUser dari body request
 
-        let search = req.query.search || [];
-        const IdUser = req.query.IdUser;
-        // let jenisBahan = req.query.jenisBahan;
-
-        
         // Lakukan pencarian menu
         const searchResult = await searchMenu(search);
-
 
         if (!searchResult || searchResult.length === 0) {
             console.log("Menu tidak ditemukan.");
@@ -28,33 +24,17 @@ route.post('/generate', async (req, res) => {
         // Generate menu harian dari hasil pencarian
         const dailyMenus = await generateDailyMenu(searchResult);
 
-        // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
-        const randomMenus = dailyMenus.map((menus, day) => ({
-            day: day + 1,
-            menus: menus.map(menu => ({
-                id_menu: menu._id,
-                menu: menu.menu,
-                bahan: menu.bahan,
-                cara_masak: menu.cara_masak,
-                kalori_makanan: menu.kalori_makanan,
-                waktu_makan: menu.waktu_makan,
-                avatar: menu.avatar,
-                jenis_bahan: menu.jenis_bahan,
-                berat_makanan: menu.berat_makanan
-            }))
-        }));
-
-
+        // Simpan data ke dalam skema RandomMenu
+        const randomMenuData = {
+            IdUser: idUser,
+            data: dailyMenus // Menyimpan data hasil generateDailyMenu
+        };
 
         // Simpan data ke dalam skema RandomMenu
-        await RandomMenu.create({
-            IdUser: IdUser,
-            menus: randomMenus,
-        });
-        // console.log(randomMenus);
+        await RandomMenu.create(randomMenuData);
 
         console.log("Random menus generated successfully");
-        res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
+        res.status(200).json({ message: 'Random menus generated successfully', data: randomMenuData });
     } catch (error) {
         console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
         res.status(500).json({ error: error.message });
