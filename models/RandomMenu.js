@@ -5,11 +5,11 @@ const MenuSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  idMenu: {
+  id_menu: {
     type: String,
     required: true
   },
-  name: {
+  menu: {
     type: String,
     required: true
   }
