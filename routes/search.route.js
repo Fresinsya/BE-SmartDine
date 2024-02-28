@@ -7,7 +7,7 @@ const { searchMenu, generateDailyMenu } = require('../controllers/search.control
 const RandomMenu = require('../models/RandomMenu');
 
 // Definisikan route untuk menjalankan fungsi utama
-route.get('/generate', async (req, res) => {
+route.post('/generate', async (req, res) => {
     try {
 
         let search = req.query.search || [];
@@ -31,6 +31,7 @@ route.get('/generate', async (req, res) => {
         const randomMenus = dailyMenus.map((menus, day) => ({
             day: day + 1,
             menus: menus.map(menu => ({
+                id_menu: menu._id,
                 menu: menu.menu,
                 bahan: menu.bahan,
                 cara_masak: menu.cara_masak,
@@ -43,7 +44,8 @@ route.get('/generate', async (req, res) => {
         }));
 
         // Simpan data ke dalam skema RandomMenu
-        await RandomMenu.create(randomMenus);
+        // await RandomMenu.create(randomMenus);
+        console.log(randomMenus);
 
         console.log("Random menus generated successfully");
         res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
