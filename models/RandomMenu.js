@@ -1,20 +1,29 @@
 const mongoose = require('mongoose');
 
+
 const RandomMenuSchema = new mongoose.Schema(
     {
         IdUser: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        menus: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Menu'
+        day: {
+            type: String,
+            required: true
         },
-        // menu_history: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: 'HistoryMakan'
-        // },
-        day : Number
+        menus:[
+            {
+                id_menu: {
+                    type: String,
+                    required: true
+                },
+                menu: {
+                    type: String,
+                    required: true
+                },
+
+            }
+        ],
     }
 )
 
