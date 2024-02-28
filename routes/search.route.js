@@ -7,7 +7,7 @@ const { searchMenu, generateDailyMenu } = require('../controllers/search.control
 const RandomMenu = require('../models/RandomMenu');
 
 // Definisikan route untuk menjalankan fungsi utama
-route.get('/generate', async (req, res) => {
+route.post('/generate', async (req, res) => {
     try {
 
         let search = req.query.search || [];
