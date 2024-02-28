@@ -1,5 +1,6 @@
 // Import model dan fungsi pencarian
 const Menu = require('../models/Menu');
+const RandomMenu = require('../models/RandomMenu');
 
 // Function untuk mencari menu berdasarkan kriteria pencarian
 async function searchMenu(search) {
