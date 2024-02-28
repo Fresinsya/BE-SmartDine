@@ -11,6 +11,7 @@ route.post('/generate', async (req, res) => {
     try {
 
         let search = req.query.search || [];
+        const IdUser = req.query.IdUser;
         // let jenisBahan = req.query.jenisBahan;
 
         
@@ -29,6 +30,7 @@ route.post('/generate', async (req, res) => {
 
         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
         const randomMenus = dailyMenus.map((menus, day) => ({
+            IdUser: IdUser,
             day: day + 1,
             menus: menus.map(menu => ({
                 id_menu: menu._id,
@@ -42,6 +44,8 @@ route.post('/generate', async (req, res) => {
                 berat_makanan: menu.berat_makanan
             }))
         }));
+
+
 
         // Simpan data ke dalam skema RandomMenu
         await RandomMenu.create(randomMenus);
