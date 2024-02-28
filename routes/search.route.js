@@ -30,7 +30,6 @@ route.post('/generate', async (req, res) => {
 
         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
         const randomMenus = dailyMenus.map((menus, day) => ({
-            IdUser: IdUser,
             day: day + 1,
             menus: menus.map(menu => ({
                 id_menu: menu._id,
@@ -48,7 +47,10 @@ route.post('/generate', async (req, res) => {
 
 
         // Simpan data ke dalam skema RandomMenu
-        await RandomMenu.create(randomMenus);
+        await RandomMenu.create({
+            IdUser: IdUser,
+            menus: randomMenus,
+        });
         // console.log(randomMenus);
 
         console.log("Random menus generated successfully");
