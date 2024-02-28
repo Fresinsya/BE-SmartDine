@@ -7,7 +7,6 @@ const { searchMenu, generateDailyMenu } = require('../controllers/search.control
 const RandomMenu = require('../models/RandomMenu');
 
 // Definisikan route untuk menjalankan fungsi utama
-const RandomMenu = require("../models/RandomMenu");
 
 route.post('/generate', async (req, res) => {
     const { IdUser } = req.body; // Mengambil IdUser dari req.body
