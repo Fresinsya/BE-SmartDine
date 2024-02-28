@@ -89,7 +89,7 @@ async function generateDailyMenu(searchResult) {
                 dailyMenu.push(randomMenu);
             }
 
-            selectedMenus.push({ day, menus: dailyMenu });
+            selectedMenus.push({menus: dailyMenu });
         }
 
         return selectedMenus;
