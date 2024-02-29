@@ -5,6 +5,10 @@ const MenuSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    avatar: {
+        type: String,
+        required: true
+    },
     id_menu: {
         type: String,
         required: true

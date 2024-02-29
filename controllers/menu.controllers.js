@@ -50,16 +50,18 @@ module.exports = {
         }
     },
     createMenu: async (req, res) => {
-        const { menu, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan } = req.body;
-        try {
-            let avatarUrl = "";
+        const { menu, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan, image } = req.body;
 
-            if (req.file) {
-                const result = await cloudinary.uploader.upload(req.file.path);
-                avatarUrl = result.secure_url;
-            } else {
-                avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
-            }
+        try {
+            const result = await cloudinary.uploader.upload(image);
+            const avatarUrl = result.secure_url;
+            
+            // if (req.file) {
+            //     const result = await cloudinary.uploader.upload(req.file.path);
+            //     avatarUrl = result.secure_url;
+            // } else {
+            //     avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+            // }
 
             const newMenu = await Menu.create({
                 menu: menu,
@@ -68,6 +70,7 @@ module.exports = {
                     jenis: item.jenis,
                     jumlah: item.jumlah
                 })),
+                avatar: avatarUrl,
                 cara_masak: cara_masak,
                 kalori_makanan: kalori_makanan,
                 waktu_makan: waktu_makan,
