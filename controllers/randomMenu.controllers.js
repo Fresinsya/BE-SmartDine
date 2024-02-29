@@ -4,7 +4,7 @@ const RandomMenu = require("../models/RandomMenu");
 
 module.exports = {
     // generateRandomMenu: async (req, res) => {
-    //     const { dailyCalories, id_user } = req.body;
+    //     const { dailyCalories, IdUser } = req.body;
     //     const days = 6;
     //     const menusForThisDay = 3;
     //     const selectedMenus = [];
@@ -64,7 +64,7 @@ module.exports = {
     
     //         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
     //         const randomMenus = selectedMenus.map(menu => ({
-    //             id_user: id_user,
+    //             IdUser: IdUser,
     //             day: menu.day,
     //             menus: menu.menus
     //         }));
@@ -93,6 +93,54 @@ module.exports = {
             res.status(500).json({
                 status: "Error",
                 message: "gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },
+    editRandomMenuByIdUser : async (req, res) => {
+        try {
+            const { IdUser } = req.params;
+            const randomMenus = await RandomMenu.find({ IdUser: IdUser });
+            if (randomMenus.length === 0) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+            res.status(200).json({
+                status: "Success",
+                message: "Data ditemukan",
+                data: randomMenus,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },
+    getRandomById: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const randomMenu = await RandomMenu.find(
+                {IdUser: id}
+            );
+            if (!randomMenu) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+            res.status(200).json({
+                status: "Success",
+                message: "Data ditemukan",
+                data: randomMenu,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal mendapatkan data",
                 error: error.message,
             });
         }

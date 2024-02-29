@@ -1,9 +1,11 @@
 const express = require("express");
-const { generateRandomMenu, getAllRandomMenu } = require("../controllers/randomMenu.controllers");
+const { getAllRandomMenu, getRandomById, editRandomMenuByIdUser } = require("../controllers/randomMenu.controllers");
 const route = express.Router();
 
 // route.get("/", generateRandomMenu);
 route.get("/", getAllRandomMenu)
+route.get("/:id", getRandomById)
+route.put("/:id", editRandomMenuByIdUser)
 
 module.exports = {
     randomMenuRoute: route
