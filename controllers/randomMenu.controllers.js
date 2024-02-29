@@ -8,17 +8,17 @@ module.exports = {
     //     const days = 6;
     //     const menusForThisDay = 3;
     //     const selectedMenus = [];
-    
+
     //     try {
     //         // Ambil semua menu
     //         const allMenus = await Menu.find();
-    
+
     //         // Buat fungsi untuk memilih menu secara acak
     //         const getRandomMenu = () => {
     //             const randomIndex = Math.floor(Math.random() * allMenus.length);
     //             return allMenus[randomIndex];
     //         };
-    
+
     //         // Lakukan iterasi untuk memilih menu untuk setiap hari
     //         for (let day = 1; day <= days; day++) {
     //             let breakfastMenu = getRandomMenu();
@@ -26,51 +26,51 @@ module.exports = {
     //             while (!breakfastMenu.waktu_makan.includes("Sarapan")) {
     //                 breakfastMenu = getRandomMenu();
     //             }
-    
+
     //             let lunchMenu;
     //             let dinnerMenu;
-    
+
     //             // Pilih menu "siang" dan "malam" sesuai aturan yang ditentukan
     //             const availableMenus = allMenus.filter(menu => {
     //                 return !menu.waktu_makan.includes("Sarapan");
     //             });
-    
+
     //             // Cari menu "siang"
     //             let availableLunchMenus = availableMenus.filter(menu => {
     //                 return !menu.waktu_makan.includes("Malam");
     //             });
-    
+
     //             if (availableLunchMenus.length > 0) {
     //                 // Pilih secara acak dari menu "siang" yang tersedia
     //                 lunchMenu = availableLunchMenus[Math.floor(Math.random() * availableLunchMenus.length)];
     //             }
-    
+
     //             // Cari menu "malam"
     //             let availableDinnerMenus = availableMenus.filter(menu => {
     //                 return !menu.waktu_makan.includes("Siang");
     //             });
-    
+
     //             if (availableDinnerMenus.length > 0) {
     //                 // Pilih secara acak dari menu "malam" yang tersedia
     //                 dinnerMenu = availableDinnerMenus[Math.floor(Math.random() * availableDinnerMenus.length)];
     //             }
-    
+
     //             // Tambahkan menu-menu untuk hari ini ke daftar menu terpilih
     //             selectedMenus.push({
     //                 day: day,
     //                 menus: [breakfastMenu, lunchMenu, dinnerMenu].filter(menu => menu) // Filter menu yang kosong (tidak ada)
     //             });
     //         }
-    
+
     //         // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
     //         const randomMenus = selectedMenus.map(menu => ({
     //             IdUser: IdUser,
     //             day: menu.day,
     //             menus: menu.menus
     //         }));
-    
+
     //         await RandomMenu.create(randomMenus);
-    
+
     //         return res.status(200).json({
     //             status: 'Success',
     //             message: 'Random menus generated successfully',
@@ -97,7 +97,7 @@ module.exports = {
             });
         }
     },
-    editRandomMenuByIdUser : async (req, res) => {
+    editRandomMenuByIdUser: async (req, res) => {
         try {
             const { IdUser } = req.params;
             const randomMenus = await RandomMenu.find({ IdUser: IdUser });
@@ -124,7 +124,7 @@ module.exports = {
         const id = req.params.id;
         try {
             const randomMenu = await RandomMenu.find(
-                {IdUser: id}
+                { IdUser: id }
             );
             if (!randomMenu) {
                 return res.status(404).json({
@@ -141,6 +141,34 @@ module.exports = {
             res.status(500).json({
                 status: "Error",
                 message: "Gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },
+    deleteRandomMenuById: async (req, res) => {
+        const idUser = req.params.id; // Mengambil IdUser dari parameter URL
+        try {
+            // Menghapus data berdasarkan IdUser
+            const result = await RandomMenu.deleteMany({ IdUser: idUser });
+
+            // Memeriksa apakah data berhasil dihapus
+            if (result.deletedCount === 0) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+
+            // Menanggapi dengan status sukses jika data berhasil dihapus
+            res.status(200).json({
+                status: "Success",
+                message: "Data berhasil dihapus",
+            });
+        } catch (error) {
+            // Menanggapi dengan status error jika terjadi kesalahan
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal menghapus data",
                 error: error.message,
             });
         }

@@ -34,7 +34,7 @@ async function searchMenu(search) {
 // Function untuk membuat menu harian dari hasil pencarian
 async function generateDailyMenu(searchResult) {
     try {
-        const totalDays = 6;
+        const totalDays = 7;
         const menuPerDay = 3;
         const dailyMenus = [];
 
