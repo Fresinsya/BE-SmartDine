@@ -77,6 +77,27 @@ module.exports = {
                 error: error.message
             });
         }
-    }
+    },
+    deleteMealPlanning: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const mealPlanning = await Meal_planning.deleteMany({ IdUser: id});
+            if (!mealPlanning) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            }
+            res.status(200).json({
+                status: "oke",
+                message: "berhasil menghapus data",
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal menghapus data",
+                error: error.message,
+            });
+        }
+    },
 
 }
