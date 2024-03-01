@@ -45,8 +45,8 @@ module.exports = {
         const { IdUser, bahan } = req.body;
         try {
             // Dapatkan dokumen MealPlanning berdasarkan IdUser
-            const mealPlanning = await Meal_planning.findOne({ IdUser });
-    
+            let mealPlanning = await Meal_planning.findOne({ IdUser });
+
             if (!mealPlanning) {
                 // Jika tidak ada MealPlanning untuk IdUser ini, Anda dapat membuatnya
                 const newMealPlanning = new Meal_planning({
@@ -54,28 +54,29 @@ module.exports = {
                     bahan: bahan.map(item => ({
                         nama: item.nama,
                         jenis: item.jenis
-                    })), // Menggunakan bahan langsung
+                    })) // Menggunakan bahan langsung
                 });
                 // Simpan dokumen MealPlanning baru
-                await newMealPlanning.save();
+                mealPlanning = await newMealPlanning.save();
             } else {
                 // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan yang ada
                 mealPlanning.bahan = mealPlanning.bahan.concat(bahan);
                 // Simpan perubahan pada dokumen MealPlanning yang ada
-                await mealPlanning.save();
+                mealPlanning = await mealPlanning.save();
             }
-    
+
             res.status(201).json({
-                status: "oke",
+                status: "success",
                 message: "berhasil menambahkan bahan",
                 data: mealPlanning
             });
         } catch (error) {
             res.status(500).json({
-                status: "Error",
+                status: "error",
                 message: "gagal menambahkan bahan",
-                error: error.message,
+                error: error.message
             });
         }
     }
+
 }
