@@ -59,12 +59,8 @@ module.exports = {
                 // Simpan dokumen MealPlanning baru
                 mealPlanning = await newMealPlanning.save();
             } else {
-                // Cek apakah ada bahan dengan nama yang sama yang sudah tersimpan
-                const existingNames = mealPlanning.bahan.map(item => item.nama);
-                const newBahan = bahan.filter(item => !existingNames.includes(item.nama));
-
-                // Tambahkan bahan baru yang tidak memiliki nama yang sama dengan yang sudah tersimpan
-                mealPlanning.bahan = mealPlanning.bahan.concat(newBahan);
+                // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan yang ada
+                mealPlanning.bahan = mealPlanning.bahan.concat(bahan);
                 // Simpan perubahan pada dokumen MealPlanning yang ada
                 mealPlanning = await mealPlanning.save();
             }
@@ -85,7 +81,7 @@ module.exports = {
     deleteMealPlanning: async (req, res) => {
         const { id } = req.params;
         try {
-            const mealPlanning = await Meal_planning.deleteMany({ IdUser: id });
+            const mealPlanning = await Meal_planning.deleteMany({ IdUser: id});
             if (!mealPlanning) {
                 return res.status(404).json({
                     message: "id tidak ditemukan",
