@@ -51,7 +51,10 @@ module.exports = {
                 // Jika tidak ada MealPlanning untuk IdUser ini, Anda dapat membuatnya
                 const newMealPlanning = new Meal_planning({
                     IdUser,
-                    bahan: bahan // Menggunakan bahan langsung
+                    bahan: bahan.map(item => ({
+                        nama: item.nama,
+                        jenis: item.jenis
+                    })), // Menggunakan bahan langsung
                 });
                 // Simpan dokumen MealPlanning baru
                 await newMealPlanning.save();
