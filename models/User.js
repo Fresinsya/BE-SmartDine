@@ -11,7 +11,7 @@ const UserSkema = new mongoose.Schema(
         password: String,
         confirmPassword: String,
         alamat: String,
-        usia: String,
+        usia: Number,
         gender: Number,
         telepon: Number,
         tinggiBadan: Number,

@@ -204,7 +204,7 @@ def main():
 # Panggil fungsi main
 if __name__ == "__main__":
     # Koneksi ke database MongoDB
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    client = pymongo.MongoClient("mongodb+srv://fresinsya:fresinsya@cluster0.bbz9eqv.mongodb.net")
     database = client["SmartDine"]  # Ganti 'nama_database' dengan nama database Anda
     collection = database["riwayats"]    # Ganti 'riwayat' dengan nama koleksi Anda
     collectionUser = database["users"]    # Ganti 'riwayat' dengan nama koleksi Anda
