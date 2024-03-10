@@ -3,6 +3,7 @@ const { createUser, getAllUser, getUserbyId, editUser, deleteUser } = require(".
 const { PythonShell } = require("python-shell");
 const User = require("../models/User");
 const route = express.Router();
+const { Types, default: mongoose } = require('mongoose')
 
 route.post("/", createUser);
 route.get("/", getAllUser);
@@ -12,18 +13,21 @@ route.delete("/:id", deleteUser);
 
 route.post("/process-data/:id", async (req, res) => { // Tambahkan async karena menggunakan await
   const id = req.params.id;
+
   let options = {
     args: [id]
   };
 
   // Memanggil skrip Python dengan PythonShell
   try {
-    const messages = await PythonShell.run('controllers/knn.py', options);
+    let objectId = typeof (id);
+    console.log('ObjectId yang valid:', objectId);
+    const messages = await PythonShell.run('controllers/knn.py', options)
     const processedData = messages.toString();
     console.log("Processed Data:", processedData);
 
     const kaloriData = JSON.parse(messages[0]);
-    const kalori = parseFloat(kaloriData["Kalori Harian"].replace(",", ""));
+    const kalori = (kaloriData["Kalori Harian"].replace(",", ""));
     console.log("Kalori:", kalori);
     const user = await User.findByIdAndUpdate(id, { // Perbaikan penggunaan id
       ...req.body,
@@ -46,6 +50,7 @@ route.post("/process-data/:id", async (req, res) => { // Tambahkan async karena 
     console.error("Error:", err);
     res.status(500).json({
       message: "Terjadi kesalahan dalam pemrosesan data.",
+      error: err.message,
     });
   }
 });

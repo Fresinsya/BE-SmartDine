@@ -179,7 +179,7 @@ def main():
 
             # Menghitung kalori harian
             kalori = kalori_harian(TDEE, defisit)
-            format_kalori = "{:,.2f}".format(kalori)
+            format_kalori = "{:,.0f}".format(kalori)
             # print("Kalori Harian:", kalori)
 
             data_json = {
@@ -204,7 +204,7 @@ def main():
 # Panggil fungsi main
 if __name__ == "__main__":
     # Koneksi ke database MongoDB
-    client = pymongo.MongoClient("mongodb+srv://fresinsya:fresinsya@cluster0.bbz9eqv.mongodb.net")
+    client = pymongo.MongoClient("mongodb+srv://fresinsya:fresinsya@cluster0.bbz9eqv.mongodb.net/")
     database = client["SmartDine"]  # Ganti 'nama_database' dengan nama database Anda
     collection = database["riwayats"]    # Ganti 'riwayat' dengan nama koleksi Anda
     collectionUser = database["users"]    # Ganti 'riwayat' dengan nama koleksi Anda

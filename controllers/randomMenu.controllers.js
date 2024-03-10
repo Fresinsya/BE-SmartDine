@@ -145,6 +145,27 @@ module.exports = {
             });
         }
     },
+    deleteFullMenu: async (req, res) => {
+        try {
+            const result = await RandomMenu.deleteMany();
+            if (result.deletedCount === 0) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+            res.status(200).json({
+                status: "Success",
+                message: "Data berhasil dihapus",
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal menghapus data",
+                error: error.message,
+            });
+        }
+    },
     deleteRandomMenuById: async (req, res) => {
         const idUser = req.params.id; // Mengambil IdUser dari parameter URL
         try {
