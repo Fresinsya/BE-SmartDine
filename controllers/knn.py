@@ -183,8 +183,9 @@ def main():
             # print("Kalori Harian:", kalori)
 
             data_json = {
-            # "BMR": format_BMR,
-            # "TDEE": format_TDEE,
+            "BMR": format_BMR,
+            "TDEE": format_TDEE,
+            "NObeyesdad": status_berat_badan,
             # "Defisit Kalori": format_defisit,
             "Kalori Harian": format_kalori
             }

@@ -1,6 +1,7 @@
 const History_makan = require("../models/History_makan");
 const Menu = require("../models/Menu");
 const RandomMenu = require("../models/RandomMenu");
+const { searchMenu, generateDailyMenu } = require("./search.controllers");
 
 module.exports = {
     // generateRandomMenu: async (req, res) => {
@@ -99,19 +100,46 @@ module.exports = {
     },
     editRandomMenuByIdUser: async (req, res) => {
         try {
-            const { IdUser } = req.params;
-            const randomMenus = await RandomMenu.find({ IdUser: IdUser });
-            if (randomMenus.length === 0) {
-                return res.status(404).json({
-                    status: "Error",
-                    message: "Data tidak ditemukan",
-                });
+            const { id } = req.params;
+            const deleteMenu = await RandomMenu.deleteMany({ IdUser: id });
+            // randommenu
+            let search = req.query.search || [];
+
+            // Lakukan pencarian menu
+            const searchResult = await searchMenu(search);
+
+            if (!searchResult || searchResult.length === 0) {
+                console.log("Menu tidak ditemukan.");
+                res.status(404).json({ message: 'Menu tidak ditemukan' });
+                return;
             }
-            res.status(200).json({
-                status: "Success",
-                message: "Data ditemukan",
-                data: randomMenus,
-            });
+
+            // Generate menu harian dari hasil pencarian
+            const dailyMenus = await generateDailyMenu(searchResult);
+
+            // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
+            const randomMenus = dailyMenus.map((menus, day) => ({
+                IdUser: id, // Mengambil IdUser dari req.body
+                day: day + 1, // Menambahkan properti day
+                menus: menus.map(menu => ({
+                    id_menu: menu._id,
+                    menu: menu.menu,
+                    bahan: menu.bahan,
+                    cara_masak: menu.cara_masak,
+                    kalori_makanan: menu.kalori_makanan,
+                    waktu_makan: menu.waktu_makan,
+                    avatar: menu.avatar,
+                    jenis_bahan: menu.jenis_bahan,
+                    berat_makanan: menu.berat_makanan,
+                    day: day + 1 // Menambahkan properti day di dalam objek menu
+                }))
+            }));
+
+            // Simpan data ke dalam skema RandomMenu
+            await RandomMenu.create(randomMenus);
+
+            console.log("Random menus generated successfully");
+            res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
         } catch (error) {
             res.status(500).json({
                 status: "Error",
@@ -119,6 +147,48 @@ module.exports = {
                 error: error.message,
             });
         }
+        // try {
+        //     let search = req.query.search || [];
+
+        //     // Lakukan pencarian menu
+        //     const searchResult = await searchMenu(search);
+
+        //     if (!searchResult || searchResult.length === 0) {
+        //         console.log("Menu tidak ditemukan.");
+        //         res.status(404).json({ message: 'Menu tidak ditemukan' });
+        //         return;
+        //     }
+
+        //     // Generate menu harian dari hasil pencarian
+        //     const dailyMenus = await generateDailyMenu(searchResult);
+
+        //     // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
+        //     const randomMenus = dailyMenus.map((menus, day) => ({
+        //         IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
+        //         day: day + 1, // Menambahkan properti day
+        //         menus: menus.map(menu => ({
+        //             id_menu: menu._id,
+        //             menu: menu.menu,
+        //             bahan: menu.bahan,
+        //             cara_masak: menu.cara_masak,
+        //             kalori_makanan: menu.kalori_makanan,
+        //             waktu_makan: menu.waktu_makan,
+        //             avatar: menu.avatar,
+        //             jenis_bahan: menu.jenis_bahan,
+        //             berat_makanan: menu.berat_makanan,
+        //             day: day + 1 // Menambahkan properti day di dalam objek menu
+        //         }))
+        //     }));
+
+        //     // Simpan data ke dalam skema RandomMenu
+        //     await RandomMenu.create(randomMenus);
+
+        //     console.log("Random menus generated successfully");
+        //     res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
+        // } catch (error) {
+        //     console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
+        //     res.status(500).json({ error: error.message });
+        // }
     },
     getRandomById: async (req, res) => {
         const id = req.params.id;

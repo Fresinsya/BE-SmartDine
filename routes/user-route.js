@@ -3,7 +3,8 @@ const { createUser, getAllUser, getUserbyId, editUser, deleteUser } = require(".
 const { PythonShell } = require("python-shell");
 const User = require("../models/User");
 const route = express.Router();
-const { Types, default: mongoose } = require('mongoose')
+const { Types, default: mongoose } = require('mongoose');
+const Riwayat = require("../models/Riwayat");
 
 route.post("/", createUser);
 route.get("/", getAllUser);
@@ -11,7 +12,7 @@ route.get("/:id", getUserbyId);
 route.put("/:id", editUser);
 route.delete("/:id", deleteUser);
 
-route.post("/process-data/:id", async (req, res) => { // Tambahkan async karena menggunakan await
+route.post("/process-data/:id", async (req, res) => {
   const id = req.params.id;
 
   let options = {
@@ -26,15 +27,25 @@ route.post("/process-data/:id", async (req, res) => { // Tambahkan async karena 
     const processedData = messages.toString();
     console.log("Processed Data:", processedData);
 
-    const kaloriData = JSON.parse(messages[0]);
-    const kalori = (kaloriData["Kalori Harian"].replace(",", ""));
+    const Data = JSON.parse(messages[0]);
+    const kalori = (Data["Kalori Harian"].replace(",", ""));
     console.log("Kalori:", kalori);
     const user = await User.findByIdAndUpdate(id, { // Perbaikan penggunaan id
       ...req.body,
       kaloriHarian: kalori,
     }, { new: true });
 
-    if (!user) {
+    const BMR = (Data["BMR"].replace(",", ""));
+    const TDEE = (Data["TDEE"].replace(",", ""));
+    const NObeyesdad = (Data["NObeyesdad"].replace(",", ""));
+    const riwayat = await Riwayat.findOneAndUpdate({ IdUser: mongoose.Types.ObjectId(id) }, {
+      ...req.body,
+      BMR: BMR,
+      TDEE: TDEE,
+      NObeyesdad: NObeyesdad,
+    }, { new: true });
+
+    if (!user ) {
       return res.status(404).json({
         message: "id tidak ditemukan",
       });
@@ -43,6 +54,7 @@ route.post("/process-data/:id", async (req, res) => { // Tambahkan async karena 
         status: "oke",
         message: "berhasil mengubah data",
         data: user,
+        // data: riwayat,
         // data: JSON.parse(messages),
       });
     }

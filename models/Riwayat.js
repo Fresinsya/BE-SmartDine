@@ -12,7 +12,9 @@ const RiwayatSkema = new mongoose.Schema(
         TUE : Number,
         CALC : Number,
         MTRANS : Number,
-        NObeyesdad : Number,
+        NObeyesdad : String,
+        BMR: Number,
+        TDEE: Number,
         tgl_input : {
             type: Date,
             default: Date.now
@@ -21,7 +23,6 @@ const RiwayatSkema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }
-
     }
 )
 
