@@ -35,17 +35,21 @@ route.post("/process-data/:id", async (req, res) => {
       kaloriHarian: kalori,
     }, { new: true });
 
+
     const BMR = (Data["BMR"].replace(",", ""));
     const TDEE = (Data["TDEE"].replace(",", ""));
-    const NObeyesdad = (Data["NObeyesdad"].replace(",", ""));
-    const riwayat = await Riwayat.findOneAndUpdate({ IdUser: mongoose.Types.ObjectId(id) }, {
+    const NObeyesdad = (Data["NObeyesdad"]);
+    console.log("BMR:", BMR);
+    console.log("TDEE:", TDEE);
+    console.log("NObeyesdad:", NObeyesdad);
+    const riwayat = await Riwayat.findOneAndUpdate({ IdUser: id }, {
       ...req.body,
       BMR: BMR,
       TDEE: TDEE,
       NObeyesdad: NObeyesdad,
-    }, { new: true });
+    });
 
-    if (!user ) {
+    if (!riwayat) {
       return res.status(404).json({
         message: "id tidak ditemukan",
       });
@@ -53,8 +57,8 @@ route.post("/process-data/:id", async (req, res) => {
       res.status(200).json({
         status: "oke",
         message: "berhasil mengubah data",
-        data: user,
-        // data: riwayat,
+        // data: user,
+        data: riwayat,
         // data: JSON.parse(messages),
       });
     }

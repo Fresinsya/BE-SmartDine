@@ -144,9 +144,9 @@ def main():
 
         # kalori harian
         def kalori_harian(TDEE, defisit):
-            if status_berat_badan == "Underweight":
+            if status_berat_badan == "Insufficient_Weight":
                 kalori = TDEE + defisit
-            elif status_berat_badan == "Normal Weight":
+            elif status_berat_badan == "Normal_Weight":
                 kalori = defisit 
             else:
                 kalori = TDEE - defisit

@@ -107,6 +107,30 @@ module.exports = {
             });
         }
     },
+    editRiwayatiduser: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const riwayat = await Riwayat.findOneAndUpdate({ IdUser: id }, 
+                req.body)
+            if (!riwayat) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            } else {
+                res.status(200).json({
+                    status: "oke",
+                    message: "berhasil mengubah data",
+                    data: riwayat,
+                })
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal mengubah data",
+                error: error.message,
+            });
+        }
+    },
     deleteRiwayat: async (req, res) => {
         const { id } = req.params;
         try {
