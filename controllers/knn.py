@@ -186,7 +186,7 @@ def main():
             "BMR": format_BMR,
             "TDEE": format_TDEE,
             "NObeyesdad": status_berat_badan,
-            # "Defisit Kalori": format_defisit,
+            "Defisit Kalori": format_defisit,
             "Kalori Harian": format_kalori
             }
 

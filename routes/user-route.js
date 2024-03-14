@@ -5,6 +5,7 @@ const User = require("../models/User");
 const route = express.Router();
 const { Types, default: mongoose } = require('mongoose');
 const Riwayat = require("../models/Riwayat");
+const RekapKalori = require("../models/RekapKalori");
 
 route.post("/", createUser);
 route.get("/", getAllUser);
@@ -49,7 +50,16 @@ route.post("/process-data/:id", async (req, res) => {
       NObeyesdad: NObeyesdad,
     });
 
-    if (!riwayat) {
+    const Defisit = (Data["Defisit Kalori"].replace(",", ""));
+    const rekapKalori = await RekapKalori.create({
+      IdUser: id,
+      total_kalori_harian: kalori,
+      BMR: BMR,
+      TDEE: TDEE,
+      Defisit: Defisit,
+    });
+
+    if (!user || !riwayat) {
       return res.status(404).json({
         message: "id tidak ditemukan",
       });
@@ -58,7 +68,7 @@ route.post("/process-data/:id", async (req, res) => {
         status: "oke",
         message: "berhasil mengubah data",
         // data: user,
-        data: riwayat,
+        data: rekapKalori
         // data: JSON.parse(messages),
       });
     }
