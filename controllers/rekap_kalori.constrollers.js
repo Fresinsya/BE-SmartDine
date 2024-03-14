@@ -20,7 +20,7 @@ module.exports = {
     getRekapbyIdUser: async (req, res) => {
         const id = req.params.id;
         try {
-            const rekapKalori = await RekapKalori.findOne({IdUser : id});
+            const rekapKalori = await RekapKalori.find({IdUser : id});
             res.status(200).json({
                 status: "oke",
                 message: "berhasil mendapatkan data",
