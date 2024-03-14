@@ -147,7 +147,7 @@ def main():
             if status_berat_badan == "Insufficient_Weight":
                 kalori = TDEE + defisit
             elif status_berat_badan == "Normal_Weight":
-                kalori = defisit 
+                kalori = TDEE
             else:
                 kalori = TDEE - defisit
             return kalori
