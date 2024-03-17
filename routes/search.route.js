@@ -5,6 +5,7 @@ const route = express.Router();
 const Menu = require('../models/Menu');
 const { searchMenu, generateDailyMenu } = require('../controllers/search.controllers');
 const RandomMenu = require('../models/RandomMenu');
+const History_makan = require('../models/History_makan');
 
 // Definisikan route untuk menjalankan fungsi utama
 route.post('/generate', async (req, res) => {
@@ -57,8 +58,20 @@ route.post('/generate', async (req, res) => {
             }))
         }));
 
+        const HistoryMakan = dailyMenus.map((menus, day) => ({
+            tgl_mulai: new Date(),
+            tgl_selesai: date_selesai,
+            id_user: req.body.IdUser,
+            menus: menus.map(menu => ({
+                day: day + 1,
+                id_menu: menu._id,
+                menu: menu.menu,
+            }))
+        }));
+
         // Simpan data ke dalam skema RandomMenu
         await RandomMenu.create(randomMenus);
+        await History_makan.create(HistoryMakan);
 
         console.log("Random menus generated successfully");
         res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });

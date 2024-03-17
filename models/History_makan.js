@@ -1,5 +1,20 @@
 const mongoose = require('mongoose');
 
+const MenuSchema = new mongoose.Schema({
+    day: {
+        type: String,
+        required: true
+    },
+    id_menu: {
+        type: String,
+        required: true
+    },
+    menu: {
+        type: String,
+        required: true
+    }
+});
+
 const HistoryMakanSchema = new mongoose.Schema({
     tgl_mulai: {
         type: Date,
@@ -10,16 +25,7 @@ const HistoryMakanSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    id_menu: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Menu'
-    },
-    menus: [{
-        menu: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'RandomMenu'
-        },
-    }]
+    menus: [MenuSchema]
 });
 
 // Pre-save hook untuk menghitung tanggal selesai (tgl_selesai) berdasarkan tanggal makan (tgl_mulai)
