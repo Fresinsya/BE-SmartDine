@@ -120,21 +120,29 @@ def main():
             if gender == 1:  # Pria
                 BMR = (10 * berat_kg) + (6.25 * tinggi_cm) - (5 * usia) + 5
             else:  # Wanita
-                BMR = (10 * berat_kg) + (6.25 * tinggi_cm) - (5 * usia) - 16
+                BMR = (10 * berat_kg) + (6.25 * tinggi_cm) - (5 * usia) - 161
             return BMR
 
         # Perhitungan TDEE (Total Daily Energy Expenditure)
         def hitung_tdee(BMR, aktivitas):
-            if aktivitas == 0:  # Tidak aktif
-                TDEE = BMR * 1.2
-            elif aktivitas == 1:  # Sedikit aktif
-                TDEE = BMR * 1.375
-            elif aktivitas == 2:  # Aktif
-                TDEE = BMR * 1.55
-            elif aktivitas == 3:  # Sangat aktif
-                TDEE = BMR * 1.725
-            else:  # Super aktif
-                TDEE = BMR * 1.9
+            if gender == 1:  # Pria
+                if aktivitas == 0:  # Tidak aktif
+                    TDEE = BMR * 1.30
+                elif aktivitas == 1:  # Sedikit aktif
+                    TDEE = BMR * 1.65
+                elif aktivitas == 2:  # Aktif
+                    TDEE = BMR * 1.76
+                else :  # Sangat aktif
+                    TDEE = BMR * 2.10
+            else:  # Wanita
+                if aktivitas == 0:  # Tidak aktif
+                    TDEE = BMR * 1.30
+                elif aktivitas == 1:  # Sedikit aktif
+                    TDEE = BMR * 1.55
+                elif aktivitas == 2:  # Aktif
+                    TDEE = BMR * 1.70
+                else:  # Super aktif
+                    TDEE = BMR * 2.00
             return TDEE
 
         # defisit kalori
