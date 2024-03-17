@@ -46,7 +46,7 @@ module.exports = {
         try {
             // Dapatkan dokumen MealPlanning berdasarkan IdUser
             let mealPlanning = await Meal_planning.findOne({ IdUser });
-
+    
             if (!mealPlanning) {
                 // Jika tidak ada MealPlanning untuk IdUser ini, Anda dapat membuatnya
                 const newMealPlanning = new Meal_planning({
@@ -59,12 +59,16 @@ module.exports = {
                 // Simpan dokumen MealPlanning baru
                 mealPlanning = await newMealPlanning.save();
             } else {
-                // Jika sudah ada MealPlanning, tambahkan bahan baru ke dalam array bahan yang ada
-                mealPlanning.bahan = mealPlanning.bahan.concat(bahan);
+                // Filter bahan yang sudah ada dalam meal planning
+                const uniqueBahan = bahan.filter(newItem => !mealPlanning.bahan.some(existingItem => existingItem.nama === newItem.nama));
+                
+                // Tambahkan bahan baru ke dalam array bahan yang ada
+                mealPlanning.bahan = mealPlanning.bahan.concat(uniqueBahan);
+    
                 // Simpan perubahan pada dokumen MealPlanning yang ada
                 mealPlanning = await mealPlanning.save();
             }
-
+    
             res.status(201).json({
                 status: "success",
                 message: "berhasil menambahkan bahan",
@@ -77,7 +81,7 @@ module.exports = {
                 error: error.message
             });
         }
-    },
+    },    
     deleteMealPlanning: async (req, res) => {
         const { id } = req.params;
         try {
