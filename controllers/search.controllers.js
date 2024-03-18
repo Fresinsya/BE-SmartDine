@@ -39,6 +39,7 @@ async function generateDailyMenu(searchResult) {
         const dailyMenus = [];
 
 
+
         // Bagi hasil pencarian menjadi 6 bagian, mewakili 6 hari
         for (let day = 0; day < totalDays; day++) {
             const dailyMenu = [];
@@ -57,6 +58,30 @@ async function generateDailyMenu(searchResult) {
         throw new Error(error.message);
     }
 }
+const generateAllDailyMenu = async (shuffledIngredients) => {
+    try {
+        const totalDays = 7;
+        const menuPerDay = 3;
+        const dailyMenus = [];
+
+        for (let day = 0; day < totalDays; day++) {
+            const dailyMenu = [];
+
+            for (let i = 0; i < menuPerDay; i++) {
+                const menuIndex = Math.floor(Math.random() * shuffledIngredients.length);
+                dailyMenu.push(shuffledIngredients[menuIndex]);
+            }
+
+            dailyMenus.push(dailyMenu);
+        }
+
+        return dailyMenus;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+
 
 
 
@@ -64,6 +89,7 @@ async function generateDailyMenu(searchResult) {
 
 module.exports = {
     searchMenu,
-    generateDailyMenu
+    generateDailyMenu,
+    generateAllDailyMenu
 }
 
