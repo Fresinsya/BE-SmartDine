@@ -12,6 +12,7 @@ const History_makan = require('../models/History_makan');
 route.post('/generate', async (req, res) => {
     try {
         let search = req.query.search || [];
+        const { kalori } = req.body;
 
         // Lakukan pencarian menu
         const searchResult = await searchMenu(search);
@@ -23,7 +24,7 @@ route.post('/generate', async (req, res) => {
         }
 
         // Generate menu harian dari hasil pencarian
-        const dailyMenus = await generateDailyMenu(searchResult);
+        const dailyMenus = await generateDailyMenu(searchResult, kalori);
 
         let date_selesai = new Date(); // Nilai default, Anda dapat mengganti ini sesuai kebutuhan
         date_selesai.setDate(date_selesai.getDate() + 6); // Tambahkan 6 hari
