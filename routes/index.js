@@ -9,6 +9,7 @@ const {randomMenuRoute} = require("./randomMenu.route");
 const { searchMenuRoute } = require("./search.route");
 const {editProfileRoute} = require("./editProfile.route");
 const { mealPlanningRoute } = require("./meal_planning.route");
+const {editGambarMenuRoute} = require("./editGambarMenu.route");
 
 route.get("/", (req, res) => {
     res.json("apiSmartDine")
@@ -16,6 +17,7 @@ route.get("/", (req, res) => {
 
 route.use("/", authRoute)
 route.use("/editProfile", editProfileRoute)
+route.use("/editGambarMenu", editGambarMenuRoute)
 route.use("/user", userRoute)
 route.use("/riwayat", riwayatRoute)
 route.use("/menu", menuRoute)

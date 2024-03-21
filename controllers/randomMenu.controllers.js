@@ -135,8 +135,11 @@ module.exports = {
                 }))
             }));
 
+            
+
             // Simpan data ke dalam skema RandomMenu
             await RandomMenu.create(randomMenus);
+
 
             console.log("Random menus generated successfully");
             res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });

@@ -50,18 +50,25 @@ module.exports = {
         }
     },
     createMenu: async (req, res) => {
-        const { menu, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan, image } = req.body;
+        const { menu, ingredients, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan, image } = req.body;
 
         try {
-            const result = await cloudinary.uploader.upload(image);
-            const avatarUrl = result.secure_url;
-            
+            // const result = await cloudinary.uploader.upload(image);
+            // const avatarUrl = result.secure_url;
+
             // if (req.file) {
             //     const result = await cloudinary.uploader.upload(req.file.path);
             //     avatarUrl = result.secure_url;
             // } else {
             //     avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
             // }
+
+            let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+
+            if (image) {
+                const result = await cloudinary.uploader.upload(image);
+                avatarUrl = result.secure_url;
+            }
 
             const newMenu = await Menu.create({
                 menu: menu,
@@ -73,8 +80,6 @@ module.exports = {
                 avatar: avatarUrl,
                 cara_masak: cara_masak,
                 kalori_makanan: kalori_makanan,
-                waktu_makan: waktu_makan,
-                jenis_bahan: jenis_bahan,
                 berat_makanan: berat_makanan
             });
 
@@ -137,24 +142,24 @@ module.exports = {
     searchMenu: async (req, res) => {
         try {
             let jenisBahan = req.query.jenisBahan;
-    
+
             const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk", "bumbu", "lainnya"];
-    
+
             // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
             if (!jenisBahan) {
                 jenisBahan = jenisBahanOptions;
-            } 
+            }
             else {
                 if (jenisBahan.includes(",")) {
                     jenisBahan = jenisBahan.split(",");
                 }
             }
-    
+
             // Lakukan pencarian menu berdasarkan jenis bahan
             const menus = await Menu.find({
                 'bahan.jenis': { $in: jenisBahan } // Menggunakan $in untuk mencocokkan dengan nilai array jenisBahan
             });
-    
+
             // Pengecekan apakah ada hasil pencarian
             if (!menus || menus.length === 0) {
                 return res.status(404).json({
@@ -162,7 +167,7 @@ module.exports = {
                     message: "Menu tidak ditemukan."
                 });
             }
-    
+
             // Menampilkan hasil pencarian
             res.status(200).json({
                 status: "Success",
@@ -177,21 +182,21 @@ module.exports = {
             });
         }
     },
-    searchJenisBahan : async (req, res) => {
+    searchJenisBahan: async (req, res) => {
         try {
             let jenisBahan = req.query.jenisBahan;
-    
+
             const jenisBahanOptions = ["sayuran", "buah", "pokok", "lauk"];
-    
+
             // Jika jenisBahan tidak diinputkan, tampilkan semua jenis bahan
             if (!jenisBahan) {
                 jenisBahan = jenisBahanOptions;
             } else {
                 jenisBahan = jenisBahan.split(",");
             }
-    
+
             const menus = await Menu.find({ "bahan.jenis": { $in: jenisBahan } });
-    
+
             // Pengecekan apakah ada hasil pencarian
             if (!menus || menus.length === 0) {
                 return res.status(404).json({
@@ -199,7 +204,7 @@ module.exports = {
                     message: "Menu tidak ditemukan."
                 });
             }
-    
+
             // Menampilkan hasil pencarian
             res.status(200).json({
                 status: "Success",
@@ -214,24 +219,24 @@ module.exports = {
             });
         }
     },
-    generateRandomMenu : async (req, res) => {
+    generateRandomMenu: async (req, res) => {
         const { ingredients, dailyCalories, id_user } = req.body;
         const days = 6;
         const selectedMenus = [];
-    
+
         try {
             // Ambil semua menu yang mengandung bahan-bahan yang diinputkan
             const allMenus = await Menu.find({ "bahan.nama": { $in: ingredients } });
-    
+
             // Buat fungsi untuk memilih menu secara acak
             const getRandomMenu = () => {
                 const randomIndex = Math.floor(Math.random() * allMenus.length);
                 return allMenus[randomIndex];
             };
-    
+
             // Inisialisasi total kalori harian yang telah dipilih
             let totalCalories = 0;
-    
+
             // Lakukan iterasi untuk memilih menu untuk setiap hari
             for (let day = 1; day <= days; day++) {
                 const randomMenu = getRandomMenu();
@@ -249,9 +254,9 @@ module.exports = {
                             jenis_bahan,
                             berat_makanan
                         }
-                    }); 
+                    });
                     totalCalories += randomMenu.kalori_makanan;
-                
+
                     // Pastikan total kalori tidak melebihi jumlah kalori harian
                     if (totalCalories > dailyCalories) {
                         // Jika melebihi, hapus menu terakhir dan keluar dari loop
@@ -262,19 +267,19 @@ module.exports = {
                     break; // Keluar dari loop jika randomMenu undefined
                 }
             }
-    
+
             // Simpan menu-menu yang dipilih ke dalam skema HistoryMakan
             const historyMakan = new History_makan({
                 id_user: id_user,
                 menus: selectedMenus
             });
-            
+
             await historyMakan.save();
-    
+
             return res.status(200).json(historyMakan);
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }
     }
-    
+
 }
