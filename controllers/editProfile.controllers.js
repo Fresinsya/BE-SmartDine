@@ -1,3 +1,4 @@
+const Menu = require("../models/Menu");
 const User = require("../models/User");
 const cloudinary = require("cloudinary").v2;
 
@@ -31,6 +32,44 @@ module.exports = {
                     status: "oke",
                     message: "berhasil mengubah data",
                     data: user,
+                })
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal mengubah data",
+                error: error.message,
+            });
+        }
+    },
+    editGambarMenu: async (req, res) => {
+        const { id } = req.params;
+        // const { image } = req.body
+
+        try {
+
+            let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+
+            if (req.body.avatar) {
+                const result = await cloudinary.uploader.upload(req.body.avatar);
+                avatarUrl = result.secure_url;
+            }
+            // const result = await cloudinary.uploader.upload(image);
+            // const avatarUrl = result.secure_url;
+
+            const menu = await Menu.findByIdAndUpdate(id, {
+                ...req.body,
+                avatar: avatarUrl,
+            }, { new: true })
+            if (!menu) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            } else {
+                res.status(200).json({
+                    status: "oke",
+                    message: "berhasil mengubah data",
+                    data: menu,
                 })
             }
         } catch (error) {
