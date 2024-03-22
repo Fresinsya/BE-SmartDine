@@ -65,8 +65,8 @@ module.exports = {
 
             let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
 
-            if (image) {
-                const result = await cloudinary.uploader.upload(image);
+            if (req.body.avatar) {
+                const result = await cloudinary.uploader.upload(req.body.avatar);
                 avatarUrl = result.secure_url;
             }
 
