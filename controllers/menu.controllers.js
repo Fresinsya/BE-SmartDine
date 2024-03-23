@@ -97,40 +97,44 @@ module.exports = {
         }
     },
     editMenu: async (req, res) => {
-        const { menu, ingredients, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan, image } = req.body;
         try {
             const { id } = req.params;
-            const deleteMenu = await Menu.deleteMany({ _id: id });
+            const existingMenu = await Menu.findById(id);
+            if (!existingMenu) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Menu tidak ditemukan",
+                });
+            }
 
-            let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+            let avatarUrl = existingMenu.avatar;
 
+            // Periksa apakah ada avatar yang baru diunggah dalam permintaan
             if (req.body.avatar) {
                 const result = await cloudinary.uploader.upload(req.body.avatar);
                 avatarUrl = result.secure_url;
             }
 
-            const newMenu = await Menu.create({
-                menu: menu,
-                bahan: bahan.map(item => ({
-                    nama: item.nama,
-                    jenis: item.jenis,
-                    jumlah: item.jumlah
-                })),
-                avatar: avatarUrl,
-                cara_masak: cara_masak,
-                kalori_makanan: kalori_makanan,
-                berat_makanan: berat_makanan
-            });
+            // Memperbarui entri menu dengan properti yang diberikan
+            existingMenu.menu = req.body.menu || existingMenu.menu;
+            existingMenu.bahan = req.body.bahan || existingMenu.bahan;
+            existingMenu.cara_masak = req.body.cara_masak || existingMenu.cara_masak;
+            existingMenu.kalori_makanan = req.body.kalori_makanan || existingMenu.kalori_makanan;
+            existingMenu.berat_makanan = req.body.berat_makanan || existingMenu.berat_makanan;
+            existingMenu.avatar = avatarUrl;
 
-            res.status(201).json({
-                status: "oke",
-                message: "berhasil menambahkan data menu",
-                data: newMenu
+            // Simpan perubahan pada entri menu
+            const updatedMenu = await existingMenu.save();
+
+            res.status(200).json({
+                status: "Success",
+                message: "Berhasil memperbarui data menu",
+                data: updatedMenu,
             });
         } catch (error) {
             res.status(500).json({
                 status: "Error",
-                message: "gagal menambahkan data menu",
+                message: "Gagal memperbarui data menu",
                 error: error.message,
             });
         }
