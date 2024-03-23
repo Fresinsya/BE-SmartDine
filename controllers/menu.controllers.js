@@ -97,23 +97,40 @@ module.exports = {
         }
     },
     editMenu: async (req, res) => {
-        const { id } = req.params;
+        const { menu, ingredients, bahan, cara_masak, kalori_makanan, berat_makanan, jenis_bahan, waktu_makan, image } = req.body;
         try {
-            const menu = await Menu.findByIdAndUpdate(id, req.body, { new: true });
-            if (!menu) {
-                return res.status(404).json({
-                    message: "id tidak ditemukan",
-                });
+            const { id } = req.params;
+            const deleteMenu = await Menu.deleteMany({ _id: id });
+
+            let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+
+            if (req.body.avatar) {
+                const result = await cloudinary.uploader.upload(req.body.avatar);
+                avatarUrl = result.secure_url;
             }
-            res.status(200).json({
+
+            const newMenu = await Menu.create({
+                menu: menu,
+                bahan: bahan.map(item => ({
+                    nama: item.nama,
+                    jenis: item.jenis,
+                    jumlah: item.jumlah
+                })),
+                avatar: avatarUrl,
+                cara_masak: cara_masak,
+                kalori_makanan: kalori_makanan,
+                berat_makanan: berat_makanan
+            });
+
+            res.status(201).json({
                 status: "oke",
-                message: "berhasil mengubah data",
-                data: menu,
+                message: "berhasil menambahkan data menu",
+                data: newMenu
             });
         } catch (error) {
             res.status(500).json({
                 status: "Error",
-                message: "gagal mengubah data",
+                message: "gagal menambahkan data menu",
                 error: error.message,
             });
         }
