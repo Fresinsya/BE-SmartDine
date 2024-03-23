@@ -1,3 +1,4 @@
+const Admin = require("../models/Admin");
 const Menu = require("../models/Menu");
 const User = require("../models/User");
 const cloudinary = require("cloudinary").v2;
@@ -32,6 +33,37 @@ module.exports = {
                     status: "oke",
                     message: "berhasil mengubah data",
                     data: user,
+                })
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal mengubah data",
+                error: error.message,
+            });
+        }
+    },
+    editProfileAdmin: async (req, res) => {
+        const { id } = req.params;
+
+        const { image } = req.body
+
+        const result = await cloudinary.uploader.upload(image);
+        const avatarUrl = result.secure_url;
+        try {
+            const admin = await Admin.findByIdAndUpdate(id, {
+                ...req.body,
+                avatar: avatarUrl
+            }, { new: true })
+            if (!admin) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            } else {
+                res.status(200).json({
+                    status: "oke",
+                    message: "berhasil mengubah data",
+                    data: admin,
                 })
             }
         } catch (error) {
