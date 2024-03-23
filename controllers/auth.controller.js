@@ -2,6 +2,7 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const Admin = require("../models/Admin");
 
 
 const generateToken = (user) => {
@@ -85,6 +86,89 @@ module.exports = {
                 status: "OK",
                 message: "Berhasil menambahkan user",
                 data: user
+            });
+        } catch (error) {
+            // Tanggapan kesalahan
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal menambahkan user",
+                error: error.message,
+            });
+        }
+    },
+    loginAdmin: async (req, res) => {
+        const { email, password } = req.body;
+        try {
+            const admin = await Admin.findOne({ email: email });
+            if (!admin) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Email tidak terdaftar",
+                });
+            }
+
+            const cekPassword = await bcrypt.compare(password, admin.password);
+            if (!cekPassword) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Password salah",
+                });
+            }
+
+            // Jika email dan password valid, hasilkan token JWT
+            const token = generateToken(admin);
+
+            res.status(200).json({
+                status: "OK",
+                message: "Berhasil login",
+                id: admin.id,
+                email: admin.email,
+                token: token,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal login",
+                error: error.message,
+            });
+        }
+    },
+    registerAdmin: async (req, res) => {
+        const { nama, email, password, confirmPassword } = req.body;
+        try {
+            const cekEmail = await Admin.findOne({ email: email });
+            if (cekEmail) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Email sudah terdaftar",
+                });
+            }
+    
+            // Pengecekan konsistensi password
+            if (password !== confirmPassword) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Konfirmasi password tidak sesuai",
+                });
+            }
+    
+            // Enkripsi password
+            const enkripPassword = await bcrypt.hash(password, 10);
+            const enkripConfirmPassword = await bcrypt.hash(confirmPassword, 10);
+    
+            // Buat user baru
+            const admin = await Admin.create({
+                nama: nama,
+                email: email,
+                password: enkripPassword,
+                confirmPassword: enkripConfirmPassword,
+            });
+    
+            // Tanggapan berhasil
+            res.status(201).json({
+                status: "OK",
+                message: "Berhasil menambahkan user",
+                data: admin
             });
         } catch (error) {
             // Tanggapan kesalahan

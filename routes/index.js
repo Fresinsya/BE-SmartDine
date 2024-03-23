@@ -9,6 +9,7 @@ const {randomMenuRoute} = require("./randomMenu.route");
 const { searchMenuRoute } = require("./search.route");
 const {editProfileRoute} = require("./editProfile.route");
 const { mealPlanningRoute } = require("./meal_planning.route");
+const {adminRoute} = require("./admin.route");
 
 
 route.get("/", (req, res) => {
@@ -18,6 +19,7 @@ route.get("/", (req, res) => {
 route.use("/", authRoute)
 route.use("/editProfile", editProfileRoute)
 route.use("/user", userRoute)
+route.use("/admin", adminRoute)
 route.use("/riwayat", riwayatRoute)
 route.use("/menu", menuRoute)
 route.use("/historymakan", historyMakanRoute)
