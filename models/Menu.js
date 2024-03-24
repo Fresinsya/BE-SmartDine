@@ -16,7 +16,7 @@ const MenuSchema = new mongoose.Schema(
         waktu_makan: [String],
         avatar: {
             type: String,
-            default: "https://i.stack.imgur.com/l60Hf.png"
+            default: "https://res.cloudinary.com/dd8tyaph2/image/upload/v1711198057/piring_gbndqt.jpg"
         },
         jenis_bahan: [String],
         berat_makanan: String,
