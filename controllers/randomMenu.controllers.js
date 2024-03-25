@@ -118,10 +118,26 @@ module.exports = {
             // Generate menu harian dari hasil pencarian
             const dailyMenus = await generateDailyMenu(searchResult, kalori);
 
+            let date_selesai = new Date(); // Nilai default, Anda dapat mengganti ini sesuai kebutuhan
+            date_selesai.setDate(date_selesai.getDate() + 6); // Tambahkan 6 hari
+
+            // Jika bulan selesai berbeda dengan bulan tanggal makan
+            if (date_selesai.getMonth() !== date_selesai.getMonth()) {
+                // Hitung sisa hari dalam bulan tanggal makan
+                const sisaHari = new Date(date_selesai.getFullYear(), date_selesai.getMonth() + 1, 0).getDate() - date_selesai.getDate();
+                // Tambahkan sisa hari ke tanggal selesai
+                date_selesai.setDate(sisaHari + 1); // Ditambah 1 karena hari dimulai dari 1
+            }
+
+            // Simpan tanggal selesai ke dalam objek req.body
+            req.body.date_selesai = date_selesai;
+
             // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
             const randomMenus = dailyMenus.map((menus, day) => ({
-                IdUser: id, // Mengambil IdUser dari req.body
-                day: day + 1, // Menambahkan properti day
+                IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
+                day: day + 1,
+                Date: new Date(),
+                Date_selesai: date_selesai,
                 menus: menus.map(menu => ({
                     id_menu: menu._id,
                     menu: menu.menu,
@@ -136,11 +152,20 @@ module.exports = {
                 }))
             }));
 
-            
+            const HistoryMakan = dailyMenus.map((menus, day) => ({
+                tgl_mulai: new Date(),
+                tgl_selesai: date_selesai,
+                id_user: req.body.IdUser,
+                menus: menus.map(menu => ({
+                    day: day + 1,
+                    id_menu: menu._id,
+                    menu: menu.menu,
+                }))
+            }));
 
             // Simpan data ke dalam skema RandomMenu
             await RandomMenu.create(randomMenus);
-
+            await History_makan.create(HistoryMakan);
 
             console.log("Random menus generated successfully");
             res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
