@@ -1,4 +1,5 @@
 const Riwayat = require("../models/Riwayat");
+const User = require("../models/User");
 
 module.exports = {
     getAllRiwayat: async (req, res) => {
@@ -20,6 +21,22 @@ module.exports = {
     createRiwayat: async (req, res) => {
         const { IdUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
         try {
+            const user = await User.findOne({ _id: IdUser });
+            if (!user) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "User tidak ditemukan",
+                });
+            }
+
+            // Lakukan pengecekan data user
+            if (!user.nama || !user.email || !user.password || !user.alamat || !user.usia || !user.gender || !user.telepon || !user.tinggiBadan || !user.beratBadan || !user.family_history || !user.kaloriHarian) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Data user tidak lengkap",
+                });
+            }
+
             const riwayat = await Riwayat.create({
                 IdUser: IdUser,
                 FACV: FACV,
@@ -110,28 +127,45 @@ module.exports = {
     editRiwayatiduser: async (req, res) => {
         const { id } = req.params;
         try {
-            const riwayat = await Riwayat.findOneAndUpdate(
-                { IdUser: id },
-                req.body,
-                { new: true } 
-            );
-            const riwayatBaru = await Riwayat.findOne({ IdUser: id });
-
+            const riwayat = await Riwayat.findOne({ IdUser: id });
             if (!riwayat) {
                 return res.status(404).json({
-                    message: "id tidak ditemukan",
+                    message: "Id tidak ditemukan",
+                });
+            }
+            
+            // Dapatkan tgl_input dari riwayat
+            const tglInput = riwayat.tgl_input;
+    
+            // Hitung perbedaan waktu antara tgl_input dan tanggal saat ini
+            const today = new Date();
+            const diffInTime = today.getTime() - tglInput.getTime();
+            const diffInDays = diffInTime / (1000 * 3600 * 24); // Konversi dari milidetik ke hari
+    
+            // Jika perbedaan waktu lebih dari 7 hari, izinkan pengeditan
+            if (diffInDays >= 7) {
+                const riwayatUpdated = await Riwayat.findOneAndUpdate(
+                    { IdUser: id },
+                    req.body,
+                    { new: true }
+                );
+    
+                res.status(200).json({
+                    status: "OK",
+                    message: "Berhasil mengubah data",
+                    data: riwayatUpdated,
                 });
             } else {
-                res.status(200).json({
-                    status: "oke",
-                    message: "berhasil mengubah data",
-                    data: riwayatBaru,
+                // Jika perbedaan waktu kurang dari 7 hari, kembalikan pesan kesalahan
+                res.status(403).json({
+                    status: "Error",
+                    message: "Edit riwayat hanya bisa dilakukan setelah 7 hari dari tanggal input.",
                 });
             }
         } catch (error) {
             res.status(500).json({
                 status: "Error",
-                message: "gagal mengubah data",
+                message: "Gagal mengubah data",
                 error: error.message,
             });
         }
