@@ -106,22 +106,22 @@ module.exports = {
             const deleteMenu = await RandomMenu.deleteMany({ IdUser: id });
             // randommenu
             let search = req.query.search || [];
-
+    
             // Lakukan pencarian menu
             const searchResult = await searchMenu(search);
-
+    
             if (!searchResult || searchResult.length === 0) {
                 console.log("Menu tidak ditemukan.");
                 res.status(404).json({ message: 'Menu tidak ditemukan' });
                 return;
             }
-
+    
             // Generate menu harian dari hasil pencarian
             const dailyMenus = await generateDailyMenu(searchResult, kalori);
-
+    
             let date_selesai = new Date(); // Nilai default, Anda dapat mengganti ini sesuai kebutuhan
             date_selesai.setDate(date_selesai.getDate() + 6); // Tambahkan 6 hari
-
+    
             // Jika bulan selesai berbeda dengan bulan tanggal makan
             if (date_selesai.getMonth() !== date_selesai.getMonth()) {
                 // Hitung sisa hari dalam bulan tanggal makan
@@ -129,13 +129,13 @@ module.exports = {
                 // Tambahkan sisa hari ke tanggal selesai
                 date_selesai.setDate(sisaHari + 1); // Ditambah 1 karena hari dimulai dari 1
             }
-
+    
             // Simpan tanggal selesai ke dalam objek req.body
             req.body.date_selesai = date_selesai;
-
+    
             // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
             const randomMenus = dailyMenus.map((menus, day) => ({
-                IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
+                IdUser: id, // Mengambil IdUser dari req.params
                 day: day + 1,
                 Date: new Date(),
                 Date_selesai: date_selesai,
@@ -152,22 +152,22 @@ module.exports = {
                     day: day + 1 // Menambahkan properti day di dalam objek menu
                 }))
             }));
-
+    
             const HistoryMakan = dailyMenus.map((menus, day) => ({
                 tgl_mulai: new Date(),
                 tgl_selesai: date_selesai,
-                id_user: req.body.IdUser,
+                id_user: id,
                 menus: menus.map(menu => ({
                     day: day + 1,
                     id_menu: menu._id,
                     menu: menu.menu,
                 }))
             }));
-
+    
             // Simpan data ke dalam skema RandomMenu
             await RandomMenuModel.create(randomMenus);
             await History_makan.create(HistoryMakan);
-
+    
             console.log("Random menus generated successfully");
             res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
         } catch (error) {
@@ -177,6 +177,8 @@ module.exports = {
                 error: error.message,
             });
         }
+    },
+    
         // try {
         //     let search = req.query.search || [];
 
@@ -219,7 +221,7 @@ module.exports = {
         //     console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
         //     res.status(500).json({ error: error.message });
         // }
-    },
+    // },
     getRandomById: async (req, res) => {
         const id = req.params.id;
         try {
