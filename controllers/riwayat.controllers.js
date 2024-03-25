@@ -113,8 +113,9 @@ module.exports = {
             const riwayat = await Riwayat.findOneAndUpdate(
                 { IdUser: id },
                 req.body,
-                { new: true } // Mengembalikan dokumen yang diperbarui
+                { new: true } 
             );
+            const riwayatBaru = await Riwayat.findOne({ IdUser: id });
 
             if (!riwayat) {
                 return res.status(404).json({
@@ -124,7 +125,7 @@ module.exports = {
                 res.status(200).json({
                     status: "oke",
                     message: "berhasil mengubah data",
-                    data: riwayat,
+                    data: riwayatBaru,
                 });
             }
         } catch (error) {
