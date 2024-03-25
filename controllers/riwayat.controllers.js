@@ -110,8 +110,12 @@ module.exports = {
     editRiwayatiduser: async (req, res) => {
         const { id } = req.params;
         try {
-            const riwayat = await Riwayat.findOneAndUpdate({ IdUser: id }, 
-                req.body)
+            const riwayat = await Riwayat.findOneAndUpdate(
+                { IdUser: id },
+                req.body,
+                { new: true } // Mengembalikan dokumen yang diperbarui
+            );
+
             if (!riwayat) {
                 return res.status(404).json({
                     message: "id tidak ditemukan",
@@ -121,7 +125,7 @@ module.exports = {
                     status: "oke",
                     message: "berhasil mengubah data",
                     data: riwayat,
-                })
+                });
             }
         } catch (error) {
             res.status(500).json({
