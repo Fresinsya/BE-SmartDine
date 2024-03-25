@@ -1,5 +1,6 @@
 const History_makan = require("../models/History_makan");
 const Menu = require("../models/Menu");
+const RandomMenuModel = require("../models/RandomMenu");
 const RandomMenu = require("../models/RandomMenu");
 const { searchMenu, generateDailyMenu } = require("./search.controllers");
 
@@ -164,7 +165,7 @@ module.exports = {
             }));
 
             // Simpan data ke dalam skema RandomMenu
-            await RandomMenu.create(randomMenus);
+            await RandomMenuModel.create(randomMenus);
             await History_makan.create(HistoryMakan);
 
             console.log("Random menus generated successfully");
