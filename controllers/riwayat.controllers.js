@@ -30,7 +30,7 @@ module.exports = {
             }
 
             // Lakukan pengecekan data user
-            if (!user.nama || !user.email || !user.password || !user.alamat || !user.usia || !user.gender || !user.telepon || !user.tinggiBadan || !user.beratBadan || !user.family_history || !user.kaloriHarian) {
+            if (!user.nama || !user.email || !user.password || !user.alamat || !user.usia || !user.gender || !user.telepon || !user.tinggiBadan || !user.beratBadan || !user.family_history) {
                 return res.status(400).json({
                     status: "Error",
                     message: "Data user tidak lengkap",
