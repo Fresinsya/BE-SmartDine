@@ -22,21 +22,6 @@ route.post("/process-data/:id", async (req, res) => {
 
   // Memanggil skrip Python dengan PythonShell
   try {
-    const riwayat = await Riwayat.findOne({ IdUser: id });
-    if (!riwayat) {
-      return res.status(404).json({
-        status: "Error",
-        message: "Riwayat tidak ditemukan",
-      });
-    }
-
-    // Lakukan pengecekan data user
-    if (!riwayat.FACV || !riwayat.FCVC || !riwayat.NCP || !riwayat.CAEC || !riwayat.CH20 || !riwayat.SCC || !riwayat.FAF || !riwayat.TUE || !riwayat.CALC || !riwayat.MTRANS) {
-      return res.status(400).json({
-        status: "Error",
-        message: "Data Riwayat tidak lengkap",
-      });
-    }
 
     const rekap = await RekapKalori.findOne({ IdUser: id, tgl_selesai: { $gt: new Date() } }).sort({ tgl_selesai: 1 });
     if (rekap) {
@@ -45,8 +30,7 @@ route.post("/process-data/:id", async (req, res) => {
       const tglSelesai = rekap.tgl_selesai;
 
       if (today > tglSelesai || today === tglSelesai) {
-        // Tgl_selesai sudah terlampaui, jalankan proses yang sama seperti ketika riwayat tidak ditemukan
-        console.log('Tanggal selesai sudah terlampaui:', today, '>', tglSelesai)
+
         let objectId = typeof (id);
         console.log('ObjectId yang valid:', objectId);
         const messages = await PythonShell.run('controllers/knn.py', options);
