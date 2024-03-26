@@ -103,5 +103,33 @@ module.exports = {
             });
         }
     },
+    deleteBahan: async (req, res) => {
+        const { id, bahanId } = req.params;
+        try {
+            const mealPlanning = await Meal_planning.findOneAndUpdate(
+                { IdUser: id },
+                { $pull: { bahan: { _id: bahanId } } },
+                { new: true }
+            );
+    
+            if (!mealPlanning) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            }
+    
+            res.status(200).json({
+                status: "oke",
+                message: "berhasil menghapus bahan",
+                data: mealPlanning
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal menghapus bahan",
+                error: error.message,
+            });
+        }
+    },
 
 }

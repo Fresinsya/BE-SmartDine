@@ -34,4 +34,21 @@ module.exports = {
             });
         }
     },
+    deleteByIDUser: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const rekapKalori = await RekapKalori.deleteMany({IdUser : id});
+            res.status(200).json({
+                status: "oke",
+                message: "berhasil menghapus data",
+                data: rekapKalori,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal menghapus data",
+                error: error.message,
+            });
+        }
+    },
 }
