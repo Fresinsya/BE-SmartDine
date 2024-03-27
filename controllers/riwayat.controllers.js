@@ -26,21 +26,21 @@ module.exports = {
         //     data: req.body,
         // });
         try {
-            const user = await User.findOne({ _id: IdUser });
-            if (!user) {
-                return res.status(404).json({
-                    status: "Error",
-                    message: "User tidak ditemukan",
-                });
-            }
+            // const user = await User.findOne({ _id: IdUser });
+            // if (!user) {
+            //     return res.status(404).json({
+            //         status: "Error",
+            //         message: "User tidak ditemukan",
+            //     });
+            // }
 
-            // Lakukan pengecekan data user
-            if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan ) {
-                return res.status(400).json({
-                    status: "Error",
-                    message: "Data user tidak lengkap",
-                });
-            }
+            // // Lakukan pengecekan data user
+            // if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan ) {
+            //     return res.status(400).json({
+            //         status: "Error",
+            //         message: "Data user tidak lengkap",
+            //     });
+            // }
 
             const riwayat = await Riwayat.create({
                 IdUser: IdUser,
