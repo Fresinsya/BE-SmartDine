@@ -192,5 +192,28 @@ module.exports = {
                 error: error.message,
             });
         }
-    }
+    },
+    deleteByIdUser: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const riwayat = await Riwayat.findOneAndDelete({ IdUser: id });
+            if (!riwayat) {
+                return res.status(404).json({
+                    message: "id tidak ditemukan",
+                });
+            } else {
+                res.status(200).json({
+                    status: "oke",
+                    message: "berhasil menghapus data",
+                    data: riwayat,
+                })
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "gagal menghapus data",
+                error: error.message,
+            });
+        }
+    },
 }
