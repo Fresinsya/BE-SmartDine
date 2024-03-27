@@ -21,7 +21,8 @@ module.exports = {
     createRiwayat: async (req, res) => {
         const { IdUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
         try {
-            const user = await User.findOne({ _id: IdUser });
+            const id = req.params.id;
+            const user = await User.findOne({_id : id});
             if (!user) {
                 return res.status(404).json({
                     status: "Error",
@@ -30,7 +31,7 @@ module.exports = {
             }
 
             // Lakukan pengecekan data user
-            if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan || !user.family_history) {
+            if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan || user.family_history === "0" || user.family_history === "1") {
                 return res.status(400).json({
                     status: "Error",
                     message: "Data user tidak lengkap",

@@ -25,21 +25,23 @@ route.post("/process-data/:id", async (req, res) => {
 
     const rekap = await RekapKalori.findOne({ IdUser: id, tgl_selesai: { $gt: new Date() } }).sort({ tgl_selesai: 1 });
     if (rekap) {
-
       const today = new Date();
       const tglSelesai = rekap.tgl_selesai;
-
       if (today > tglSelesai || today === tglSelesai) {
-
-        let objectId = typeof (id);
-        console.log('ObjectId yang valid:', objectId);
         const messages = await PythonShell.run('controllers/knn.py', options);
         const processedData = messages.toString();
         console.log("Processed Data:", processedData);
 
-        const Data = JSON.parse(messages[0]);
+        let Data;
+        try {
+          Data = JSON.parse(processedData);
+        } catch (jsonErr) {
+          throw new Error("Invalid JSON format returned from Python script: " + jsonErr.message);
+        }
+
         const kalori = Data["Kalori Harian"].replace(",", "");
         console.log("Kalori:", kalori);
+
         const user = await User.findByIdAndUpdate(id, {
           ...req.body,
           kaloriHarian: kalori,
@@ -51,6 +53,7 @@ route.post("/process-data/:id", async (req, res) => {
         console.log("BMR:", BMR);
         console.log("TDEE:", TDEE);
         console.log("NObeyesdad:", NObeyesdad);
+
         const riwayat = await Riwayat.findOneAndUpdate({ IdUser: id }, {
           ...req.body,
           BMR: BMR,
@@ -70,34 +73,32 @@ route.post("/process-data/:id", async (req, res) => {
         });
         console.log('Rekap kalori berhasil dibuat:', rekapKalori);
 
-        // if (!user || !riwayat) {
-        //   return res.status(404).json({
-        //     message: "id tidak ditemukan",
-        //   });
-        // } else {
         res.status(200).json({
           status: "oke",
           message: "berhasil mengubah data",
-          data: rekapKalori, // Gunakan nilai rekapKalori yang didefinisikan di dalam blok try-catch
+          data: rekapKalori,
         });
-        // }
       } else {
-        // Tgl_selesai belum terlampaui, kirimkan pesan ke client
         res.status(400).json({
           status: "Error",
           message: "Proses tidak dapat dilakukan karena tgl_selesai belum terlampaui",
         });
       }
     } else {
-      let objectId = typeof (id);
-      console.log('ObjectId yang valid:', objectId);
       const messages = await PythonShell.run('controllers/knn.py', options);
       const processedData = messages.toString();
       console.log("Processed Data:", processedData);
 
-      const Data = JSON.parse(messages[0]);
+      let Data;
+      try {
+        Data = JSON.parse(processedData);
+      } catch (jsonErr) {
+        throw new Error("Invalid JSON format returned from Python script: " + jsonErr.message);
+      }
+
       const kalori = Data["Kalori Harian"].replace(",", "");
       console.log("Kalori:", kalori);
+
       const user = await User.findByIdAndUpdate(id, {
         ...req.body,
         kaloriHarian: kalori,
@@ -109,6 +110,7 @@ route.post("/process-data/:id", async (req, res) => {
       console.log("BMR:", BMR);
       console.log("TDEE:", TDEE);
       console.log("NObeyesdad:", NObeyesdad);
+
       const riwayat = await Riwayat.findOneAndUpdate({ IdUser: id }, {
         ...req.body,
         BMR: BMR,
@@ -131,7 +133,7 @@ route.post("/process-data/:id", async (req, res) => {
       res.status(200).json({
         status: "oke",
         message: "berhasil menambahkan data",
-        data: rekapKalori, // Gunakan nilai rekapKalori yang didefinisikan di dalam blok try-catch
+        data: rekapKalori,
       });
     }
   } catch (err) {

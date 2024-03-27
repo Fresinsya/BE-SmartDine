@@ -37,7 +37,7 @@ module.exports = {
     deleteByIDUser: async (req, res) => {
         const id = req.params.id;
         try {
-            const rekapKalori = await RekapKalori.findOneAndDelete({ IdUser: id });
+            const rekapKalori = await RekapKalori.deleteOne({ IdUser: id });
             if (!rekapKalori) {
                 return res.status(404).json({
                     status: "Not Found",
