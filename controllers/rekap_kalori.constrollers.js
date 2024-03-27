@@ -37,7 +37,13 @@ module.exports = {
     deleteByIDUser: async (req, res) => {
         const id = req.params.id;
         try {
-            const rekapKalori = await RekapKalori.findOneAndDelete({IdUser : id});
+            const rekapKalori = await RekapKalori.findOneAndDelete({ IdUser: id });
+            if (!rekapKalori) {
+                return res.status(404).json({
+                    status: "Not Found",
+                    message: "Tidak ada data yang ditemukan untuk dihapus.",
+                });
+            }
             res.status(200).json({
                 status: "oke",
                 message: "berhasil menghapus data",
