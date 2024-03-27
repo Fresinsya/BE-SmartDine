@@ -20,11 +20,11 @@ module.exports = {
     },
     createRiwayat: async (req, res) => {
         const { IdUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
-        return res.status(200).json({
-            status: "oke",
-            message: "berhasil menambahkan data kebiasaan",
-            data: req.body,
-        });
+        // return res.status(200).json({
+        //     status: "oke",
+        //     message: "berhasil menambahkan data kebiasaan",
+        //     data: req.body,
+        // });
         try {
             const user = await User.findOne({ _id: IdUser });
             if (!user) {
