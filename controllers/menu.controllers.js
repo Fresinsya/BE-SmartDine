@@ -216,7 +216,7 @@ module.exports = {
                 jenisBahan = jenisBahan.split(",");
             }
 
-            const menus = await Menu.find({ "bahan.jenis": { $in: jenisBahan } });
+            const menus = await Menu.find({ "jenis_bahan": { $in: jenisBahan } });
 
             // Pengecekan apakah ada hasil pencarian
             if (!menus || menus.length === 0) {
