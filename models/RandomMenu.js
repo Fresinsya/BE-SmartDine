@@ -5,6 +5,10 @@ const MenuSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    jenis: {
+        type: String,
+        required: true
+    },
     avatar: {
         type: String,
         required: true
@@ -16,8 +20,18 @@ const MenuSchema = new mongoose.Schema({
     menu: {
         type: String,
         required: true
+    },
+    berat_modif: {
+        type: String,
+        required: true
+    },
+    kalori_modif: {
+        type: String,
+        required: true
     }
 });
+
+
 
 const RandomMenuSchema = new mongoose.Schema({
     IdUser: {
@@ -25,7 +39,7 @@ const RandomMenuSchema = new mongoose.Schema({
         ref: 'User', // Referensi ke skema User jika digunakan
         required: true
     },
-    menus: [MenuSchema],
+    menus: [[MenuSchema]],
     date: {
         type: Date,
         default: Date.now
