@@ -132,18 +132,12 @@ route.post('/generate', async (req, res) => {
         console.log("Total kalori makanan:", totalKalori);
 
         // Lanjutkan proses seperti yang diimplementasikan sebelumnya
-
         const pokokSearchResult = searchResult.pokokMenus;
         const laukSearchResult = searchResult.laukMenus;
         const sayuranSearchResult = searchResult.sayuranMenus;
         const buahSearchResult = searchResult.buahMenus;
 
-        // Generate menu harian dari hasil pencarian
-        // const pokokDailyMenus = await generateDailyMenu(pokokSearchResult, kalori);
-        // const laukDailyMenus = await generateDailyMenu(laukSearchResult, kalori);
-        // const sayuranDailyMenus = await generateDailyMenu(sayuranSearchResult, kalori);
-        // const buahDailyMenus = await generateDailyMenu(buahSearchResult, kalori);
-
+       
         // Gabungkan hasil pencarian dari setiap jenis bahan makanan menjadi satu objek
         const combinedSearchResult = {
             pokok: pokokSearchResult,
@@ -153,15 +147,6 @@ route.post('/generate', async (req, res) => {
         };
 
         const generateCoba = await generateDailyMenu(combinedSearchResult, kalori);
-
-        // return res.status(200).json({ message: 'Random menus generated successfully', data: generateCoba });
-
-        // const generateCoba = await generateDailyMenuDay(combinedSearchResult, kaloriperMakan);
-        // console.log(generateCoba)
-
-        // return res.status(200).json({ message: 'Random menus generated successfully', data: generateCoba });
-
-        // return res.status(200).json({ message: 'Random menus generated successfully', data: generateCoba });
 
         let date_selesai = new Date(); // Nilai default, Anda dapat mengganti ini sesuai kebutuhan
         date_selesai.setDate(date_selesai.getDate() + 6); // Tambahkan 6 hari
@@ -176,30 +161,6 @@ route.post('/generate', async (req, res) => {
 
         // Simpan tanggal selesai ke dalam objek req.body
         req.body.date_selesai = date_selesai;
-
-
-
-        // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
-        // const randomMenus = Object.keys(combinedSearchResult).map((jenisBahan, day) => ({
-        //     IdUser: req.body.IdUser,
-        //     day: day + 1,
-        //     Date: new Date(),
-        //     Date_selesai: date_selesai,
-        //     menus: combinedSearchResult[jenisBahan].map(menu => ({
-        //         id_menu: menu._id,
-        //         menu: menu.menu,
-        //         bahan: menu.bahan,
-        //         cara_masak: menu.cara_masak,
-        //         kalori_makanan: menu.kalori_makanan,
-        //         waktu_makan: menu.waktu_makan,
-        //         avatar: menu.avatar,
-        //         jenis_bahan: menu.jenis_bahan,
-        //         berat_makanan: menu.berat_makanan,
-        //         day: day + 1
-        //     }))
-        // }));
-
-        // console.log(generateCoba)
 
 
         const randomMenus = generateCoba.map((menus, day) => {
@@ -245,128 +206,59 @@ route.post('/generate', async (req, res) => {
             };
         });
 
-        // const randomMenus = generateCoba.map((menus, day) => ({
-        //     IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
-        //     day: day + 1,
-        //     Date: new Date(),
-        //     Date_selesai: date_selesai,
-        //     menus: menus.map(item => {
 
-        //         const pokokAvatar = item.pokok.avatar;
-        //         const laukAvatar = item.lauk.avatar;
-        //         const sayurAvatar = item.sayuran.avatar;
+        const HistoryMakan = generateCoba.map((menus, day) => {
+            // Memeriksa apakah semua properti yang dibutuhkan tersedia di objek data
+            // const tgl_mulai: new Date();
+            const tgl_selesai = date_selesai;
+            const id_user = req.body.IdUser;
+            const mappedMenus = menus.map(item => {
+                const pokokAvatar = item.pokok.avatar;
+                const laukAvatar = item.lauk.avatar;
+                const sayurAvatar = item.sayuran.avatar;
 
-        //         const pokokNama = item.pokok.menu;
-        //         const laukNama = item.lauk.menu;
-        //         const sayurNama = item.sayuran.menu;
+                const pokokNama = item.pokok.menu;
+                const laukNama = item.lauk.menu;
+                const sayurNama = item.sayuran.menu;
 
-        //         const pokokIds = item.pokok._id;
-        //         const laukIds = item.lauk._id;
-        //         const sayurIds = item.sayuran._id;
+                const pokokIds = item.pokok._id;
+                const laukIds = item.lauk._id;
+                const sayurIds = item.sayuran._id;
 
-        //         const pokokBeratBaru = item.pokok.berat_modif;
-        //         const laukBeratBaru = item.lauk.berat_modif;
-        //         const sayurBeratBaru = item.sayuran.berat_modif;
+                const pokokBeratBaru = item.pokokBeratModif;
+                const laukBeratBaru = item.laukBeratModif;
+                const sayurBeratBaru = item.sayuranBeratModif;
 
-        //         const pokokKaloriBaru = item.pokok.kalori_modif;
-        //         const laukKaloriBaru = item.lauk.kalori_modif;
-        //         const sayurKaloriBaru = item.sayuran.kalori_modif;
+                const pokokKaloriBaru = item.pokokKaloriModif;
+                const laukKaloriBaru = item.laukKaloriModif;
+                const sayurKaloriBaru = item.sayuranKaloriModif;
 
-        //         console.log(pokokKaloriBaru, laukKaloriBaru, sayurKaloriBaru);
+                const hasil = [
+                    { id_menu: pokokIds, menu: pokokNama, day: day + 1, kalori_modif: pokokKaloriBaru, berat_modif: pokokBeratBaru },
+                    { id_menu: laukIds, menu: laukNama, day: day + 1, kalori_modif: laukKaloriBaru, berat_modif: laukBeratBaru },
+                    { id_menu: sayurIds, menu: sayurNama, day: day + 1, kalori_modif: sayurKaloriBaru, berat_modif: sayurBeratBaru }
+                ];
 
-        //         const hasil = [
-        //             { id_menu: pokokIds, menu: pokokNama, avatar: pokokAvatar, day: day + 1, kalori_modif: pokokKaloriBaru, berat_modif: pokokBeratBaru, jenis: "pokok" },
-        //             { id_menu: laukIds, menu: laukNama, avatar: laukAvatar, day: day + 1, kalori_modif: laukKaloriBaru, berat_modif: laukBeratBaru, jenis: "lauk" },
-        //             { id_menu: sayurIds, menu: sayurNama, avatar: sayurAvatar, day: day + 1, kalori_modif: sayurKaloriBaru, berat_modif: sayurBeratBaru, jenis: "sayuran" }
-        //         ];
+                return hasil;
+            });
 
-        //         return hasil;
-        //     })
+            return {
+                id_user: id_user,
+                day: day + 1,
+                Date: new Date(),
+                Date_selesai: tgl_selesai,
+                menus: mappedMenus.flat() // Menggunakan flat() untuk "membentangkan" array hasil map
+            };
 
-
-        // }));
-        // console.log("randomMenu", randomMenus)
-
-
-
-
-        // const randomMenus = generateCoba.map((menus, day) => ({
-        //     IdUser: req.body.IdUser,
-        //     day: day + 1,
-        //     Date: new Date(),
-        //     Date_selesai: date_selesai,
-        //     // menus: menus.map(item => ({
-        //     menus: [
-        //         {
-        //             day: day + 1,
-        //             jenis: "pokok",
-        //             id_menu: menus.pokok._id,
-        //             menu: menus.pokok.menu,
-        //             avatar: menus.pokok.avatar,
-        //             kalori_modif: menus.pokok.kalori_modif,
-        //             berat_modif: menus.pokok.berat_modif
-        //         },
-        //         {
-        //             day: day + 1,
-        //             jenis: "lauk",
-        //             id_menu: menus.lauk._id,
-        //             menu: menus.lauk.menu,
-        //             avatar: menus.lauk.avatar,
-        //             kalori_modif: menus.lauk.kalori_modif,
-        //             berat_modif: menus.lauk.berat_modif
-        //         },
-        //         {
-        //             day: day + 1,
-        //             jenis: "sayuran",
-        //             id_menu: menus.sayuran._id,
-        //             menu: menus.sayuran.menu,
-        //             avatar: menus.sayuran.avatar,
-        //             kalori_modif: menus.sayuran.kalori_modif,
-        //             berat_modif: menus.sayuran.berat_modif
-        //         }
-        //     ]
-        // }));
-
-
-
-        // const HistoryMakan = generateCoba.map((data, index) => {
-        //     // Memeriksa apakah semua properti yang dibutuhkan tersedia di objek data
-        //     if (data && data.pokok && data.lauk && data.sayuran) {
-        //         return {
-        //             // tgl_mulai: new Date(),
-        //             // tgl_selesai: date_selesai,
-        //             // id_user: req.body.IdUser,
-        //             menus: [
-        //                 {
-        //                     day: index + 1,
-        //                     id_menu: data.pokok._id,
-        //                     menu: data.pokok.menu
-        //                 },
-        //                 // {
-        //                 //     day: index + 1,
-        //                 //     id_menu: data.lauk._id,
-        //                 //     menu: data.lauk.menu
-        //                 // },
-        //                 // {
-        //                 //     day: index + 1,
-        //                 //     id_menu: data.sayuran._id,
-        //                 //     menu: data.sayuran.menu
-        //                 // }
-        //             ]
-        //         };
-        //     } else {
-        //         // Jika ada data yang tidak lengkap, return objek kosong atau lakukan penanganan kesalahan lainnya
-        //         return null; // atau throw new Error('Data tidak lengkap');
-        //     }
-        // });
+        });
 
 
         // Simpan data ke dalam skema RandomMenu dan History_makan
         await RandomMenuModel.create(randomMenus);
-        // await History_makan.create(HistoryMakan);
+        await History_makan.create(HistoryMakan);
 
         console.log("Random menus generated successfully", generateCoba);
-        res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
+        res.status(200).json({ message: 'Random menus generated successfully', data: HistoryMakan });
     } catch (error) {
         console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
         res.status(500).json({ error: error.message });

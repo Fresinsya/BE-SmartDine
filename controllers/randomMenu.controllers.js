@@ -2,6 +2,7 @@ const History_makan = require("../models/History_makan");
 const Menu = require("../models/Menu");
 const RandomMenuModel = require("../models/RandomMenu");
 const RandomMenu = require("../models/RandomMenu");
+const User = require("../models/User");
 const { searchMenu, generateDailyMenu } = require("./search.controllers");
 
 module.exports = {
@@ -102,26 +103,57 @@ module.exports = {
     editRandomMenuByIdUser: async (req, res) => {
         try {
             const { id } = req.params;
-            const { kalori } = req.body;
+            // const { kalori } = req.body;
             const deleteMenu = await RandomMenu.deleteMany({ IdUser: id });
             // randommenu
             let search = req.query.search || [];
-    
-            // Lakukan pencarian menu
-            const searchResult = await searchMenu(search);
-    
-            if (!searchResult || searchResult.length === 0) {
-                console.log("Menu tidak ditemukan.");
-                res.status(404).json({ message: 'Menu tidak ditemukan' });
+
+            const user = await User.findById(id);
+            if (!user) {
+                res.status(404).json({ message: 'User tidak ditemukan' });
                 return;
             }
-    
-            // Generate menu harian dari hasil pencarian
-            const dailyMenus = await generateDailyMenu(searchResult, kalori);
-    
+
+            const kalori = user.kaloriHarian;
+            // const kaloriperMakan = kalori / 3;
+
+            console.log("kalori per makan:", kalori);
+
+            // Lakukan pencarian menu untuk setiap jenis bahan makanan
+            const searchResult = await searchMenu(search);
+
+            // console.log(searchResult)
+
+            // Hitung total kalori makanan dari setiap jenis bahan makanan
+            const totalKalori = Object.values(searchResult).reduce((total, menuArr) => {
+                menuArr.forEach(menu => {
+                    total += menu.kalori_makanan;
+                });
+                return total;
+            }, 0);
+
+            console.log("Total kalori makanan:", totalKalori);
+
+            // Lanjutkan proses seperti yang diimplementasikan sebelumnya
+            const pokokSearchResult = searchResult.pokokMenus;
+            const laukSearchResult = searchResult.laukMenus;
+            const sayuranSearchResult = searchResult.sayuranMenus;
+            const buahSearchResult = searchResult.buahMenus;
+
+
+            // Gabungkan hasil pencarian dari setiap jenis bahan makanan menjadi satu objek
+            const combinedSearchResult = {
+                pokok: pokokSearchResult,
+                lauk: laukSearchResult,
+                sayuran: sayuranSearchResult,
+                buah: buahSearchResult
+            };
+
+            const generateCoba = await generateDailyMenu(combinedSearchResult, kalori);
+
             let date_selesai = new Date(); // Nilai default, Anda dapat mengganti ini sesuai kebutuhan
             date_selesai.setDate(date_selesai.getDate() + 6); // Tambahkan 6 hari
-    
+
             // Jika bulan selesai berbeda dengan bulan tanggal makan
             if (date_selesai.getMonth() !== date_selesai.getMonth()) {
                 // Hitung sisa hari dalam bulan tanggal makan
@@ -129,46 +161,102 @@ module.exports = {
                 // Tambahkan sisa hari ke tanggal selesai
                 date_selesai.setDate(sisaHari + 1); // Ditambah 1 karena hari dimulai dari 1
             }
-    
+
             // Simpan tanggal selesai ke dalam objek req.body
             req.body.date_selesai = date_selesai;
-    
-            // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
-            const randomMenus = dailyMenus.map((menus, day) => ({
-                IdUser: id, // Mengambil IdUser dari req.params
-                day: day + 1,
-                Date: new Date(),
-                Date_selesai: date_selesai,
-                menus: menus.map(menu => ({
-                    id_menu: menu._id,
-                    menu: menu.menu,
-                    bahan: menu.bahan,
-                    cara_masak: menu.cara_masak,
-                    kalori_makanan: menu.kalori_makanan,
-                    waktu_makan: menu.waktu_makan,
-                    avatar: menu.avatar,
-                    jenis_bahan: menu.jenis_bahan,
-                    berat_makanan: menu.berat_makanan,
-                    day: day + 1 // Menambahkan properti day di dalam objek menu
-                }))
-            }));
-    
-            const HistoryMakan = dailyMenus.map((menus, day) => ({
-                tgl_mulai: new Date(),
-                tgl_selesai: date_selesai,
-                id_user: id,
-                menus: menus.map(menu => ({
+
+
+            const randomMenus = generateCoba.map((menus, day) => {
+                const Date_selesai = date_selesai; // Pastikan date_selesai telah didefinisikan sebelumnya
+                const IdUser = id; // Pastikan req.body.IdUser telah didefinisikan sebelumnya
+
+                const mappedMenus = menus.map(item => {
+                    const pokokAvatar = item.pokok.avatar;
+                    const laukAvatar = item.lauk.avatar;
+                    const sayurAvatar = item.sayuran.avatar;
+
+                    const pokokNama = item.pokok.menu;
+                    const laukNama = item.lauk.menu;
+                    const sayurNama = item.sayuran.menu;
+
+                    const pokokIds = item.pokok._id;
+                    const laukIds = item.lauk._id;
+                    const sayurIds = item.sayuran._id;
+
+                    const pokokBeratBaru = item.pokokBeratModif;
+                    const laukBeratBaru = item.laukBeratModif;
+                    const sayurBeratBaru = item.sayuranBeratModif;
+
+                    const pokokKaloriBaru = item.pokokKaloriModif;
+                    const laukKaloriBaru = item.laukKaloriModif;
+                    const sayurKaloriBaru = item.sayuranKaloriModif;
+
+                    const hasil = [
+                        { id_menu: pokokIds, menu: pokokNama, avatar: pokokAvatar, day: day + 1, kalori_modif: pokokKaloriBaru, berat_modif: pokokBeratBaru, jenis: "pokok" },
+                        { id_menu: laukIds, menu: laukNama, avatar: laukAvatar, day: day + 1, kalori_modif: laukKaloriBaru, berat_modif: laukBeratBaru, jenis: "lauk" },
+                        { id_menu: sayurIds, menu: sayurNama, avatar: sayurAvatar, day: day + 1, kalori_modif: sayurKaloriBaru, berat_modif: sayurBeratBaru, jenis: "sayuran" }
+                    ];
+
+                    return hasil;
+                });
+
+                return {
+                    IdUser: IdUser,
                     day: day + 1,
-                    id_menu: menu._id,
-                    menu: menu.menu,
-                }))
-            }));
-    
-            // Simpan data ke dalam skema RandomMenu
+                    Date: new Date(),
+                    Date_selesai: Date_selesai,
+                    menus: mappedMenus.flat() // Menggunakan flat() untuk "membentangkan" array hasil map
+                };
+            });
+
+
+            const HistoryMakan = generateCoba.map((menus, day) => {
+                // Memeriksa apakah semua properti yang dibutuhkan tersedia di objek data
+                // const tgl_mulai: new Date();
+                const tgl_selesai = date_selesai;
+                const id_user = id;
+                const mappedMenus = menus.map(item => {
+                    const pokokNama = item.pokok.menu;
+                    const laukNama = item.lauk.menu;
+                    const sayurNama = item.sayuran.menu;
+
+                    const pokokIds = item.pokok._id;
+                    const laukIds = item.lauk._id;
+                    const sayurIds = item.sayuran._id;
+
+                    const pokokBeratBaru = item.pokokBeratModif;
+                    const laukBeratBaru = item.laukBeratModif;
+                    const sayurBeratBaru = item.sayuranBeratModif;
+
+                    const pokokKaloriBaru = item.pokokKaloriModif;
+                    const laukKaloriBaru = item.laukKaloriModif;
+                    const sayurKaloriBaru = item.sayuranKaloriModif;
+
+                    const hasil = [
+                        { id_menu: pokokIds, menu: pokokNama, day: day + 1, kalori_modif: pokokKaloriBaru, berat_modif: pokokBeratBaru },
+                        { id_menu: laukIds, menu: laukNama, day: day + 1, kalori_modif: laukKaloriBaru, berat_modif: laukBeratBaru },
+                        { id_menu: sayurIds, menu: sayurNama, day: day + 1, kalori_modif: sayurKaloriBaru, berat_modif: sayurBeratBaru }
+                    ];
+
+                    return hasil;
+                });
+
+                return {
+                    id_user: id_user,
+                    day: day + 1,
+                    Date: new Date(),
+                    Date_selesai: tgl_selesai,
+                    menus: mappedMenus.flat() // Menggunakan flat() untuk "membentangkan" array hasil map
+                };
+
+            });
+
+
+            // Simpan data ke dalam skema RandomMenu dan History_makan
             await RandomMenuModel.create(randomMenus);
             await History_makan.create(HistoryMakan);
-    
-            console.log("Random menus generated successfully");
+
+            console.log("Random menus generated successfully", generateCoba);
             res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
         } catch (error) {
             res.status(500).json({
@@ -178,50 +266,6 @@ module.exports = {
             });
         }
     },
-    
-        // try {
-        //     let search = req.query.search || [];
-
-        //     // Lakukan pencarian menu
-        //     const searchResult = await searchMenu(search);
-
-        //     if (!searchResult || searchResult.length === 0) {
-        //         console.log("Menu tidak ditemukan.");
-        //         res.status(404).json({ message: 'Menu tidak ditemukan' });
-        //         return;
-        //     }
-
-        //     // Generate menu harian dari hasil pencarian
-        //     const dailyMenus = await generateDailyMenu(searchResult);
-
-        //     // Simpan menu-menu yang dipilih ke dalam skema RandomMenu
-        //     const randomMenus = dailyMenus.map((menus, day) => ({
-        //         IdUser: req.body.IdUser, // Mengambil IdUser dari req.body
-        //         day: day + 1, // Menambahkan properti day
-        //         menus: menus.map(menu => ({
-        //             id_menu: menu._id,
-        //             menu: menu.menu,
-        //             bahan: menu.bahan,
-        //             cara_masak: menu.cara_masak,
-        //             kalori_makanan: menu.kalori_makanan,
-        //             waktu_makan: menu.waktu_makan,
-        //             avatar: menu.avatar,
-        //             jenis_bahan: menu.jenis_bahan,
-        //             berat_makanan: menu.berat_makanan,
-        //             day: day + 1 // Menambahkan properti day di dalam objek menu
-        //         }))
-        //     }));
-
-        //     // Simpan data ke dalam skema RandomMenu
-        //     await RandomMenu.create(randomMenus);
-
-        //     console.log("Random menus generated successfully");
-        //     res.status(200).json({ message: 'Random menus generated successfully', data: randomMenus });
-        // } catch (error) {
-        //     console.error("Gagal melakukan pencarian atau pembuatan menu:", error.message);
-        //     res.status(500).json({ error: error.message });
-        // }
-    // },
     getRandomById: async (req, res) => {
         const id = req.params.id;
         try {

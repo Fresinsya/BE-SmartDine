@@ -12,6 +12,14 @@ const MenuSchema = new mongoose.Schema({
     menu: {
         type: String,
         required: true
+    },
+    kalori_modif: {
+        type: String,
+        required: true
+    },
+    berat_modif: {
+        type: String,
+        required: true
     }
 });
 
@@ -25,7 +33,7 @@ const HistoryMakanSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    menus: [MenuSchema]
+    menus: [[MenuSchema]]
 });
 
 // Pre-save hook untuk menghitung tanggal selesai (tgl_selesai) berdasarkan tanggal makan (tgl_mulai)
