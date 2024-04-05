@@ -21,21 +21,21 @@ module.exports = {
     createRiwayat: async (req, res) => {
         const { IdUser, FACV, FCVC, NCP, CAEC, CH20, SCC, FAF, TUE, CALC, MTRANS, NObeyesdad } = req.body;
         try {
-            // const user = await User.findOne({ _id: IdUser });
-            // if (!user) {
-            //     return res.status(404).json({
-            //         status: "Error",
-            //         message: "User tidak ditemukan",
-            //     });
-            // }
+            const user = await User.findOne({ _id: IdUser });
+            if (!user) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "User tidak ditemukan",
+                });
+            }
 
-            // // Lakukan pengecekan data user
-            // if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan ) {
-            //     return res.status(400).json({
-            //         status: "Error",
-            //         message: "Data user tidak lengkap",
-            //     });
-            // }
+            // Lakukan pengecekan data user
+            if (!user.usia || !user.gender || !user.tinggiBadan || !user.beratBadan || (user.family_history === undefined || user.family_history === null)) {
+                return res.status(400).json({
+                    status: "Error",
+                    message: "Data user tidak lengkap",
+                });
+            }
 
             const riwayat = await Riwayat.create({
                 IdUser: IdUser,

@@ -291,6 +291,40 @@ module.exports = {
             });
         }
     },
+    getRandomBy_id: async (req, res) => {
+        const id = req.params.id;
+        const IdMenu = req.params.IdMenu;
+        try {
+            // Mencari randomMenu berdasarkan IdUser
+            const randomMenu = await RandomMenu.findOne({ IdUser: id });
+        
+            if (!randomMenu) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+        
+            if (!foundMenu) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Menu tidak ditemukan",
+                });
+            }
+        
+            res.status(200).json({
+                status: "Success",
+                message: "Data ditemukan",
+                data: foundMenu
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },    
     getRandomDayAndIdUser: async (req, res) => {
         const id = req.params.id;
         const day = parseInt(req.params.day);
