@@ -40,6 +40,10 @@ const RandomMenuSchema = new mongoose.Schema({
         required: true
     },
     menus: [[MenuSchema]],
+    day: {
+        type: String,
+        required: true
+    },
     date: {
         type: Date,
         default: Date.now

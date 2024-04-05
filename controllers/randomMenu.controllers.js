@@ -291,6 +291,54 @@ module.exports = {
             });
         }
     },
+    getRandomDayAndIdUser: async (req, res) => {
+        const id = req.params.id;
+        const day = parseInt(req.params.day);
+        const paket = parseInt(req.params.paket);
+        try {
+            const randomMenu = await RandomMenu.findOne(
+                { 
+                    IdUser: id,
+                    day: day // Menambahkan kondisi untuk mencocokkan day yang terluar
+                }
+            );
+            if (!randomMenu) {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "Data tidak ditemukan",
+                });
+            }
+
+            // Menambahkan kondisi untuk memfilter paket makanan
+            if (paket === 1) {
+                // Mengambil index menus ke 0, 1, dan 2
+                randomMenu.menus = randomMenu.menus.slice(0, 3);
+            } else if (paket === 2) {
+                // Mengambil index menus ke 3, 4, dan 5
+                randomMenu.menus = randomMenu.menus.slice(3, 6);
+            } else if (paket === 3) {
+                // Mengambil index menus ke 6, 7, dan 8
+                randomMenu.menus = randomMenu.menus.slice(6, 9);
+            }else {
+                return res.status(404).json({
+                    status: "Error",
+                    message: "paket tidak ditemukan",
+                });
+            }
+    
+            res.status(200).json({
+                status: "Success",
+                message: "Data ditemukan",
+                data: randomMenu,
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: "Error",
+                message: "Gagal mendapatkan data",
+                error: error.message,
+            });
+        }
+    },
     deleteFullMenu: async (req, res) => {
         try {
             const result = await RandomMenu.deleteMany();
