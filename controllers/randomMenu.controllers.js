@@ -305,6 +305,8 @@ module.exports = {
                 });
             }
         
+            const foundMenu = randomMenu.menus.find(menu => menu.id_menu === IdMenu);
+
             if (!foundMenu) {
                 return res.status(404).json({
                     status: "Error",
