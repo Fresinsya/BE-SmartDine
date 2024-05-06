@@ -146,8 +146,8 @@ def main():
             return TDEE
 
         # defisit kalori
-        def defisit_kalori(TDEE):
-            defisit = 0.20 * TDEE 
+        def defisit_kalori():
+            defisit = 500 
             return defisit
 
         # # kalori harian
@@ -190,7 +190,7 @@ def main():
             # print("TDEE:", TDEE)
 
             # Menghitung defisit kalori
-            defisit = defisit_kalori(TDEE)
+            defisit = defisit_kalori()
             format_defisit = "{:,.2f}".format(defisit)
             # print("Defisit Kalori:", defisit)
 
@@ -203,7 +203,7 @@ def main():
             "BMR": format_BMR,
             "TDEE": format_TDEE,
             "NObeyesdad": status_berat_badan,
-            # "Defisit Kalori": format_defisit,
+            "Defisit Kalori": format_defisit,
             "Kalori Harian": format_kalori
             }
 
