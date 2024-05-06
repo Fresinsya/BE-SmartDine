@@ -297,14 +297,15 @@ module.exports = {
         try {
             // Mencari randomMenu berdasarkan IdUser
             const randomMenu = await RandomMenu.findOne({ IdUser: id });
-        
+
             if (!randomMenu) {
                 return res.status(404).json({
                     status: "Error",
                     message: "Data tidak ditemukan",
                 });
             }
-        
+
+
             const foundMenu = randomMenu.menus.find(menu => menu.id_menu === IdMenu);
 
             if (!foundMenu) {
@@ -313,7 +314,7 @@ module.exports = {
                     message: "Menu tidak ditemukan",
                 });
             }
-        
+
             res.status(200).json({
                 status: "Success",
                 message: "Data ditemukan",
@@ -326,14 +327,14 @@ module.exports = {
                 error: error.message,
             });
         }
-    },    
+    },
     getRandomDayAndIdUser: async (req, res) => {
         const id = req.params.id;
         const day = parseInt(req.params.day);
         const paket = parseInt(req.params.paket);
         try {
             const randomMenu = await RandomMenu.findOne(
-                { 
+                {
                     IdUser: id,
                     day: day // Menambahkan kondisi untuk mencocokkan day yang terluar
                 }
@@ -355,13 +356,13 @@ module.exports = {
             } else if (paket === 3) {
                 // Mengambil index menus ke 6, 7, dan 8
                 randomMenu.menus = randomMenu.menus.slice(6, 9);
-            }else {
+            } else {
                 return res.status(404).json({
                     status: "Error",
                     message: "paket tidak ditemukan",
                 });
             }
-    
+
             res.status(200).json({
                 status: "Success",
                 message: "Data ditemukan",

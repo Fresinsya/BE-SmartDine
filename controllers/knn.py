@@ -150,14 +150,23 @@ def main():
             defisit = 0.20 * TDEE 
             return defisit
 
+        # # kalori harian
+        # def kalori_harian(TDEE, defisit):
+        #     if status_berat_badan == "Insufficient_Weight":
+        #         kalori = TDEE + defisit
+        #     elif status_berat_badan == "Normal_Weight":
+        #         kalori = TDEE
+        #     else:
+        #         kalori = TDEE - defisit
+        #     return kalori
         # kalori harian
-        def kalori_harian(TDEE, defisit):
+        def kalori_harian(TDEE):
             if status_berat_badan == "Insufficient_Weight":
-                kalori = TDEE + defisit
+                kalori = TDEE + 500
             elif status_berat_badan == "Normal_Weight":
                 kalori = TDEE
             else:
-                kalori = TDEE - defisit
+                kalori = TDEE - 500
             return kalori
             
 
@@ -194,7 +203,7 @@ def main():
             "BMR": format_BMR,
             "TDEE": format_TDEE,
             "NObeyesdad": status_berat_badan,
-            "Defisit Kalori": format_defisit,
+            # "Defisit Kalori": format_defisit,
             "Kalori Harian": format_kalori
             }
 

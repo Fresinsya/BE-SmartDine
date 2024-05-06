@@ -39,7 +39,7 @@ const RandomMenuSchema = new mongoose.Schema({
         ref: 'User', // Referensi ke skema User jika digunakan
         required: true
     },
-    menus: [MenuSchema],
+    menus: [[MenuSchema]],
     day: {
         type: String,
         required: true
