@@ -133,20 +133,25 @@ module.exports = {
                     message: "Id tidak ditemukan",
                 });
             }
+
+            const today = new Date();
+            const tglUpdate = today.setDate(today.getDate() + 7);
             
             // Dapatkan tgl_input dari riwayat
             const tglInput = riwayat.tgl_input;
+            const tglSelesai = riwayat.tgl_selesai;
+            console.log(tglInput, tglSelesai)
     
             // Hitung perbedaan waktu antara tgl_input dan tanggal saat ini
-            const today = new Date();
-            const diffInTime = today.getTime() - tglInput.getTime();
+            const diffInTime = new Date().getTime() - tglSelesai.getTime();
             const diffInDays = diffInTime / (1000 * 3600 * 24); // Konversi dari milidetik ke hari
     
+            console.log(diffInDays)
             // Jika perbedaan waktu lebih dari 7 hari, izinkan pengeditan
-            if (diffInDays >= 7) {
+            if (diffInDays >= 0) {
                 const riwayatUpdated = await Riwayat.findOneAndUpdate(
                     { IdUser: id },
-                    req.body,
+                    {...req.body, tgl_input: new Date(), tgl_selesai: tglUpdate},
                     { new: true }
                 );
     
