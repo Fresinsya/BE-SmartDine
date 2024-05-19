@@ -80,7 +80,7 @@ module.exports = {
 
         try {
 
-            let avatarUrl = "https://i.stack.imgur.com/l60Hf.png";
+            let avatarUrl = "https://res.cloudinary.com/dd8tyaph2/image/upload/v1716126670/profilr_zwq5dq.png";
 
             if (req.body.avatar) {
                 const result = await cloudinary.uploader.upload(req.body.avatar);
