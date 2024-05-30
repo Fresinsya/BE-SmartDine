@@ -44,7 +44,7 @@ route.post("/process-data/:id", async (req, res) => {
 
         const user = await User.findByIdAndUpdate(id, {
           ...req.body,
-          kaloriHarian: kalori,
+          kaloriHarian: kalori + " Kkal",
         }, { new: true });
 
         const BMR = Data["BMR"].replace(",", "");
