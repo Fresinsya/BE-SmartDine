@@ -11,11 +11,20 @@ const UserSkema = new mongoose.Schema(
         password: String,
         confirmPassword: String,
         alamat: String,
-        usia: Number,
+        usia: {
+            type: Number,
+            default: 0,
+        },
         gender: Number,
         telepon: Number,
-        tinggiBadan: Number,
-        beratBadan: Number,
+        tinggiBadan: {
+            type: Number,
+            default: 0,
+        },
+        beratBadan:{
+            type: Number,
+            default: 0,
+        },
         family_history: Number,
         kaloriHarian: Number
     }
