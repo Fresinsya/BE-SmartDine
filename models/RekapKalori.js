@@ -23,11 +23,13 @@ const RekapKaloriSchema = new mongoose.Schema({
     },
     BMR: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     TDEE: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     Defisit: {
         type: Number,
